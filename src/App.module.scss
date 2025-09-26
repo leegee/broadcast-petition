@@ -3,3 +3,13 @@
     height: 100vh;
     overflow: hidden;
 }
+
+.overlay {
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    max-width: 50vw;
+    max-height: 100%;
+    overflow: hidden;
+}
