@@ -16,6 +16,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@types/maplibre-gl": "^1.14.0",
     "jsdom": "^25.0.1",
+    "sass-embedded": "^1.93.2",
     "solid-devtools": "^0.34.3",
     "typescript": "^5.7.2",
     "vite": "^7.1.4",
@@ -23,6 +24,7 @@
     "vitest": "^3.0.0"
   },
   "dependencies": {
+    "beercss": "^3.12.8",
     "solid-js": "^1.9.5"
   }
 }

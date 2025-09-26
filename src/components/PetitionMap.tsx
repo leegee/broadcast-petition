@@ -1,5 +1,7 @@
+import styles from "./PetitionMap.module.scss";
 import { onMount, onCleanup } from "solid-js";
 import maplibregl from "maplibre-gl";
+import { updateCounts } from "../petitionStore";
 
 const PETITION_ID = 730194;
 const POLL_INTERVAL = 60000; // 1 minute
@@ -19,24 +21,27 @@ export default function PetitionMap() {
   let intervalId: number;
 
   async function fetchData() {
-    // GeoJSON of constituencies
     const geoData = await fetch(
       "Westminster_Parliamentary_Constituencies_July_2024_Boundaries_UK_BGC_-8097874740651686118.geojson"
     ).then((r) => r.json());
 
-    // Petition JSON
     const petition = await fetch(
       `https://petition.parliament.uk/petitions/${PETITION_ID}.json`
     ).then((r) => r.json());
 
-    const counts: Record<string, number> = {};
+    const newCounts: Record<string, { name: string; count: number }> = {};
     petition.data.attributes.signatures_by_constituency.forEach((c: any) => {
-      counts[c.ons_code.toUpperCase()] = c.signature_count;
+      newCounts[c.ons_code.toUpperCase()] = {
+        name: c.name, // ✅ constituency English name comes from API
+        count: c.signature_count,
+      };
     });
+
+    updateCounts(newCounts);
 
     geoData.features.forEach((f: any) => {
       const code = f.properties.PCON24CD.toUpperCase();
-      f.properties.signatures = counts[code] || 0;
+      f.properties.signatures = newCounts[code]?.count || 0;
     });
 
     return { geoData, petition };
@@ -56,8 +61,13 @@ export default function PetitionMap() {
 
     map = new maplibregl.Map({
       container: "map",
-      style: "https://demotiles.maplibre.org/style.json",
+      style: {
+        version: 8,
+        sources: {},
+        layers: [],
+      },
       center: [-1.5, 54],
+      attributionControl: false,
       zoom: 5,
     });
 
@@ -82,17 +92,16 @@ export default function PetitionMap() {
             ["linear"],
             ["get", "signatures"],
             min,
-            "#14532d", // dark
+            "#14532d",
             (min + max) / 2,
             "#22c55e",
             max,
-            "#bbf7d0", // bright
+            "#bbf7d0",
           ],
           "fill-opacity": 0.9,
         },
       });
 
-      // Hover popup
       map.on("mousemove", "constituency-fills", (e) => {
         map.getCanvas().style.cursor = "pointer";
         if (e.features && e.features.length > 0) {
@@ -114,7 +123,6 @@ export default function PetitionMap() {
       });
     });
 
-    // Poll petition data every minute
     intervalId = window.setInterval(updateMapData, POLL_INTERVAL);
   });
 
@@ -123,5 +131,5 @@ export default function PetitionMap() {
     intervalId && clearInterval(intervalId);
   });
 
-  return <div id="map" style={{ width: "100%", height: "600px" }} />;
+  return <div id="map" class={styles.map} />;
 }

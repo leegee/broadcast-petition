@@ -1,4 +1,5 @@
 import { render } from 'solid-js/web';
+import "beercss";
 import 'solid-devtools';
 import App from './App';
 
