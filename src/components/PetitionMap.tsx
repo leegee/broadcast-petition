@@ -1,7 +1,7 @@
 import styles from "./PetitionMap.module.scss";
 import { onMount, onCleanup } from "solid-js";
 import maplibregl from "maplibre-gl";
-import { fetchPetitionData } from "../petitionStore";
+import { fetchPetitionData, countsStore } from "../petitionStore";
 
 const POLL_INTERVAL = 60_000;
 
@@ -9,32 +9,26 @@ export default function PetitionMap() {
   let map: maplibregl.Map;
   let popup: maplibregl.Popup;
   let intervalId: number;
+  let geoData: any;
 
-  function getSignatureRange(counts: Record<string, { name: string; count: number }>) {
-    const values = Object.values(counts).map(c => c.count);
-    return {
-      min: Math.min(...values),
-      max: Math.max(...values),
-    };
+  function getSignatureRange() {
+    const values = Object.values(countsStore).map(c => c.count);
+    return { min: Math.min(...values), max: Math.max(...values) };
   }
 
   async function updateMapData() {
-    const { counts } = await fetchPetitionData();
+    await fetchPetitionData();
 
-    const source = map.getSource("constituencies") as maplibregl.GeoJSONSource;
-    if (!source) return;
-
-    const geoData = source._data as any;
     geoData.features.forEach((f: any) => {
       const code = f.properties.PCON24CD.toUpperCase();
-      f.properties.signatures = counts[code]?.count || 0;
+      f.properties.signatures = countsStore[code]?.count || 0;
     });
 
-    const { min, max } = getSignatureRange(counts);
+    const { min, max } = getSignatureRange();
 
-    source.setData(geoData);
+    const source = map.getSource("constituencies") as maplibregl.GeoJSONSource;
+    if (source) source.setData(geoData);
 
-    // Update fill-color dynamically
     const layer = map.getLayer("constituency-fills");
     if (layer) {
       map.setPaintProperty(layer.id, "fill-color", [
@@ -52,23 +46,24 @@ export default function PetitionMap() {
   }
 
   onMount(async () => {
-    const geoData = await fetch(
+    geoData = await fetch(
       "Westminster_Parliamentary_Constituencies_July_2024_Boundaries_UK_BGC_-8097874740651686118.geojson"
     ).then(r => r.json());
 
-    // Initial fetch to populate counts
-    const { counts } = await fetchPetitionData();
+    await fetchPetitionData();
+
     geoData.features.forEach((f: any) => {
       const code = f.properties.PCON24CD.toUpperCase();
-      f.properties.signatures = counts[code]?.count || 0;
+      f.properties.signatures = countsStore[code]?.count || 0;
     });
 
-    const { min, max } = getSignatureRange(counts);
+    const { min, max } = getSignatureRange();
 
     map = new maplibregl.Map({
       container: "map",
       style: { version: 8, sources: {}, layers: [] },
-      center: [-1.5, 54],
+      // center: [-1.5, 54],
+      center: [-5.2, 55.3],
       zoom: 5,
       attributionControl: false,
     });
@@ -100,7 +95,7 @@ export default function PetitionMap() {
 
       map.on("mousemove", "constituency-fills", (e) => {
         map.getCanvas().style.cursor = "pointer";
-        if (e.features && e.features.length > 0) {
+        if (e.features?.length) {
           const f = e.features[0];
           popup
             .setLngLat(e.lngLat)

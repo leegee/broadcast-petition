@@ -12,7 +12,7 @@ export default function BiggestChange() {
                 <h3>{change.name}</h3>
                 <h4>
                     +{Number(change.new - change.old).toLocaleString()}
-                    → {change.new.toLocaleString()} signatures
+                    &nbsp;→&nbsp;{change.new.toLocaleString()} signatures
                     at {change.timestamp.toLocaleTimeString()}
                 </h4>
             </fieldset>
