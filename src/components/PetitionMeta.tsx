@@ -1,9 +1,9 @@
 import styles from "./PetitionMeta.module.scss";
-import { petitionMeta } from "../petitionStore";
+import { petitionMeta, loading, error } from "../petitionStore";
 
 export default function PetitionMeta() {
-    // Consider "loading" if action is undefined
-    if (!petitionMeta.action) return <div>Loading petition info…</div>;
+    if (loading()) return <div>Loading petition info…</div>;
+    if (error()) return <div>Error loading petition info: {error()}</div>;
 
     return (
         <article class={styles.meta + " transparent card border margin large-padding"}>
