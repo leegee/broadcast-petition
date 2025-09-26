@@ -17,7 +17,7 @@ export default function PetitionMeta() {
                 {petitionMeta.additional_details && <p>{petitionMeta.additional_details}</p>}
             </blockquote>
 
-            <ul class="list border">
+            {/* <ul class="list border hidden">
                 <li>The petition is <strong>{petitionMeta.state}</strong></li>
                 <li>
                     Created: <strong>{new Date(petitionMeta.created_at!).toLocaleDateString()}</strong>
@@ -33,7 +33,7 @@ export default function PetitionMeta() {
                         <strong>Closed:</strong> {new Date(petitionMeta.closed_at).toLocaleDateString()}
                     </li>
                 )}
-            </ul>
-        </article>
+            </ul> */}
+        </article >
     );
 }

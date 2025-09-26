@@ -1,3 +1,4 @@
+import './index.scss';
 import { render } from 'solid-js/web';
 import "beercss";
 import 'solid-devtools';
