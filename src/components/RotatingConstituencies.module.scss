@@ -1,0 +1,39 @@
+.rotatingList {
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Slide transition */
+.slide-enter {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.slide-enter-active {
+    transform: translateX(0);
+    opacity: 1;
+    transition: all 0.5s ease;
+}
+
+.slide-exit {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.slide-exit-active {
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: all 0.5s ease;
+}

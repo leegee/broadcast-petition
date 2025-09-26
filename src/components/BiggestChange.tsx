@@ -6,15 +6,15 @@ export default function BiggestChange() {
     if (!change) return null;
 
     return (
-        <article class={styles["biggest-change"] + ' transparent card large-padding '}>
+        <article class={styles["biggest-change"]}>
             <fieldset>
-                <legend class="">Latest</legend>
-                <h3>{change.name}</h3>
-                <h4>
+                <legend>Latest</legend>
+                <h6>{change.name}</h6>
+                <p>
                     +{Number(change.new - change.old).toLocaleString()}
                     &nbsp;→&nbsp;{change.new.toLocaleString()} signatures
                     at {change.timestamp.toLocaleTimeString()}
-                </h4>
+                </p>
             </fieldset>
         </article>
     );

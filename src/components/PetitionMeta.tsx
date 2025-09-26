@@ -6,7 +6,7 @@ export default function PetitionMeta() {
     if (error()) return <div>Error loading petition info: {error()}</div>;
 
     return (
-        <article class={styles.meta + " transparent card border margin large-padding"}>
+        <article class={styles.meta + " transparent card border margin"}>
             <h1 class={styles.title}>{petitionMeta.action}</h1>
             <h2>
                 <strong>{petitionMeta.signature_count?.toLocaleString()}</strong> total signatures
