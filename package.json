@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "beercss": "^3.12.8",
+    "flag-icons": "^7.5.0",
     "solid-js": "^1.9.5"
   }
 }
