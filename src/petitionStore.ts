@@ -24,6 +24,10 @@ export const [countryCountsStore, setCountryCountsStore] = createStore<
     Record<string, { name: string; count: number }>
 >({});
 
+export const [regionCountsStore, setRegionCountsStore] = createStore<
+    Record<string, { name: string; count: number }>
+>({});
+
 export interface BiggestChange {
     code: string;
     name: string;
@@ -49,6 +53,7 @@ export async function fetchPetitionData() {
         const meta = data.data.attributes as PetitionMeta & {
             signatures_by_constituency: { ons_code: string; name: string; signature_count: number }[];
             signatures_by_country: { code: string; name: string; signature_count: number }[];
+            signatures_by_region: { ons_code: string; name: string; signature_count: number }[];
         };
 
         setPetitionMeta({
@@ -62,16 +67,23 @@ export async function fetchPetitionData() {
             signature_count: meta.signature_count,
         });
 
-        const newCounts: Record<string, { name: string; count: number }> = {};
-        meta.signatures_by_constituency.forEach((c) => {
-            newCounts[c.ons_code.toUpperCase()] = { name: c.name, count: c.signature_count };
-        });
-
         const newCountryCounts: Record<string, { name: string; count: number }> = {};
         meta.signatures_by_country.forEach(c => {
             newCountryCounts[c.code] = { name: c.name, count: c.signature_count };
         });
         setCountryCountsStore(newCountryCounts);
+
+        const newRegionCounts: Record<string, { name: string; count: number }> = {};
+        meta.signatures_by_region.forEach(c => {
+            newRegionCounts[c.ons_code] = { name: c.name, count: c.signature_count };
+        });
+        setRegionCountsStore(newRegionCounts);
+
+
+        const newCounts: Record<string, { name: string; count: number }> = {};
+        meta.signatures_by_constituency.forEach((c) => {
+            newCounts[c.ons_code.toUpperCase()] = { name: c.name, count: c.signature_count };
+        });
 
         // Update biggest change
         let maxDiff = 0;
