@@ -4,11 +4,9 @@ import PetitionMap from "./components/PetitionMap";
 import PetitionMeta from "./components/PetitionMeta";
 import PetitionLink from "./components/PetitionLink";
 import TopSignatures from "./components/TopSignatures";
-import RotatingConstituencies from "./components/RotatingConstituencies";
 import Ticker from "./components/Ticker";
 import TopRegions from "./components/TopRegions";
 import ThresholdProgressBar from "./components/ThresholdProgressBar";
-import { GOVERNMENT_RESPONSE_THRESHOLD, DEBATE_THRESHOLD, petitionMeta } from "./petitionStore";
 
 export default function App() {
   return (
@@ -34,11 +32,20 @@ export default function App() {
             <TopRegions />
           </div>
         </div>
+      </div >
 
-        <PetitionLink />
-        <Ticker />
+
+      <div style="width: 100%; background-color: rgb(9, 9, 194); width: 100%; display: flex; flex-direction:row; justify-content: center; align-items: flex-start;">
+        <div style="width: 50: margin-right: 0;">
+          <PetitionLink />
+        </div>
+        <div style="width: 50%">
+          <Ticker />
+        </div>
       </div>
+
       <PetitionMap />
-    </main>
+
+    </main >
   );
 };

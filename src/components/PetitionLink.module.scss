@@ -1,6 +1,14 @@
 .sign {
-    width: auto;
-    margin-top: 0 1em;
+    z-index: 5000;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    text-align: left;
+    align-content: flex-start;
+    background-color: rgb(17, 17, 219);
+    border: 1pt solid rgba(12, 12, 150, 0.619);
+    padding: 0 1em !important;
+    box-shadow: 4pt 0 8pt navy;
 
     h2 {
         display: flex;

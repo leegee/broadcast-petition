@@ -7,8 +7,8 @@ export default function PetitionLink() {
     return (
         <>
             <Show when={!petitionMeta.closed_at}>
-                <div class={styles.sign + " margin padding center-align middle-align"}>
-                    <h2 class="padding">
+                <div class={styles.sign}>
+                    <h2 class="right-padding">
                         <Flag />
                         <span>
                             Sign at{" "}
