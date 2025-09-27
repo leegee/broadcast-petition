@@ -21,19 +21,19 @@ export default function BiggestChange() {
                 const time = new Date(changeAccessor().timestamp).toLocaleTimeString();
 
                 return (
-                    <article class={styles["biggest-change"] + " center-align middle-align"}>
+                    <div class={styles["biggest-change"] + " center-align middle-align no-margin no-padding"}>
                         <fieldset>
                             <legend>Latest</legend>
-                            <h6>
+                            <p>
                                 {changeAccessor().name + ' '}
                                 <Show when={diff < newest}>
                                     +{diff.toLocaleString() + ' → '}
                                 </Show>
                                 {newest.toLocaleString() + ' '}
                                 signatures at {time}
-                            </h6>
+                            </p>
                         </fieldset>
-                    </article>
+                    </div>
                 );
             }}
         </Show>

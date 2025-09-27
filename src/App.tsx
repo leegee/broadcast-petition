@@ -7,17 +7,32 @@ import TopSignatures from "./components/TopSignatures";
 import RotatingConstituencies from "./components/RotatingConstituencies";
 import Ticker from "./components/Ticker";
 import TopRegions from "./components/TopRegions";
+import ThresholdProgressBar from "./components/ThresholdProgressBar";
+import { GOVERNMENT_RESPONSE_THRESHOLD, DEBATE_THRESHOLD, petitionMeta } from "./petitionStore";
 
 export default function App() {
   return (
     <main class={styles.main}>
       <div class={styles.overlay}>
         <PetitionMeta />
-        <BiggestChange />
+
+        <div style="margin-bottom: 1em; gap: 1em; width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: center;">
+          <div style="width: 50%; text-align: center">
+            <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
+            <ThresholdProgressBar type="DEBATE" />
+          </div>
+          <div style="width: 50%; text-align: center">
+            <BiggestChange />
+          </div>
+        </div>
 
         <div style="width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: flex-start;">
-          <div style="width: 50%"> <TopSignatures /> </div>
-          <div style="width: 50%"> <TopRegions /> </div>
+          <div style="width: 50%">
+            <TopSignatures />
+          </div>
+          <div style="width: 50%">
+            <TopRegions />
+          </div>
         </div>
 
         <PetitionLink />

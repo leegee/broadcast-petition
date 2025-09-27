@@ -3,6 +3,9 @@ import { createSignal } from "solid-js";
 
 export const PETITION_ID = 730194;
 
+export const GOVERNMENT_RESPONSE_THRESHOLD = 10000;
+export const DEBATE_THRESHOLD = 100000;
+
 export interface PetitionMeta {
     action: string;
     background: string;
@@ -12,6 +15,10 @@ export interface PetitionMeta {
     closed_at: string | null;
     state: string;
     signature_count: number;
+    debate_threshold_reached_at: string | null;
+    scheduled_debate_date: string | null;
+    response_threshold_reached_at: string | null;
+    government_response_at: string | null;
 }
 
 export const [petitionMeta, setPetitionMeta] = createStore<Partial<PetitionMeta>>({});
@@ -65,6 +72,10 @@ export async function fetchPetitionData() {
             closed_at: meta.closed_at,
             state: meta.state,
             signature_count: meta.signature_count,
+            debate_threshold_reached_at: meta.debate_threshold_reached_at,
+            scheduled_debate_date: meta.scheduled_debate_date,
+            response_threshold_reached_at: meta.response_threshold_reached_at,
+            government_response_at: meta.government_response_at,
         });
 
         const newCountryCounts: Record<string, { name: string; count: number }> = {};
