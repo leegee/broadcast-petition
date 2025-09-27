@@ -20,6 +20,10 @@ export const [countsStore, setCountsStore] = createStore<
     Record<string, { name: string; count: number }>
 >({});
 
+export const [countryCountsStore, setCountryCountsStore] = createStore<
+    Record<string, { name: string; count: number }>
+>({});
+
 export interface BiggestChange {
     code: string;
     name: string;
@@ -44,6 +48,7 @@ export async function fetchPetitionData() {
 
         const meta = data.data.attributes as PetitionMeta & {
             signatures_by_constituency: { ons_code: string; name: string; signature_count: number }[];
+            signatures_by_country: { code: string; name: string; signature_count: number }[];
         };
 
         setPetitionMeta({
@@ -62,6 +67,12 @@ export async function fetchPetitionData() {
             newCounts[c.ons_code.toUpperCase()] = { name: c.name, count: c.signature_count };
         });
 
+        const newCountryCounts: Record<string, { name: string; count: number }> = {};
+        meta.signatures_by_country.forEach(c => {
+            newCountryCounts[c.code] = { name: c.name, count: c.signature_count };
+        });
+        setCountryCountsStore(newCountryCounts);
+
         // Update biggest change
         let maxDiff = 0;
         let changed: BiggestChange | null = null;
@@ -79,7 +90,9 @@ export async function fetchPetitionData() {
 
         setLoading(false);
         return { meta, counts: newCounts };
-    } catch (err: any) {
+    }
+
+    catch (err: any) {
         setError(err.message || "Unknown error");
         setLoading(false);
         return null;

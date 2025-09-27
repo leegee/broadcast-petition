@@ -1,7 +1,7 @@
 // from screen-capture home-broadcast
 import styles from "./Ticker.module.scss";
 import { createMemo, onMount, onCleanup } from "solid-js";
-import { countsStore } from "../petitionStore";
+import { countryCountsStore, countsStore } from "../petitionStore";
 
 interface TickerProps {
     speed?: number; // pixels per second
@@ -17,9 +17,12 @@ export default function Ticker({ speed = 300 }: TickerProps) {
     let lastTime = 0;
 
     const items = createMemo(() =>
-        Object.entries(countsStore)
-            .map(([code, { name, count }]) => ({ code, name, count }))
-            .sort((a, b) => b.count - a.count)
+        [
+            ...Object.entries(countryCountsStore),
+            ...Object.entries(countsStore),
+        ]
+            .map(([_code, { name, count }]) => ({ name, count }))
+            .filter((i) => i.count > 0)
     );
 
     const step = (time: number) => {
@@ -45,9 +48,7 @@ export default function Ticker({ speed = 300 }: TickerProps) {
     onMount(() => {
         animationFrameId = requestAnimationFrame(step);
 
-        const resizeObserver = new ResizeObserver(() => {
-            innerWidth = 0; // recalc width on resize
-        });
+        const resizeObserver = new ResizeObserver(() => innerWidth = 0);
         if (innerRef) resizeObserver.observe(innerRef);
     });
 
