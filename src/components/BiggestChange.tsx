@@ -20,7 +20,7 @@ export default function BiggestChange() {
                 const time = new Date(changeAccessor().timestamp).toLocaleTimeString();
 
                 return (
-                    <article class={styles["biggest-change"] + " center-align middle-align max full-width"}>
+                    <article class={styles["biggest-change"] + " center-align middle-align"}>
                         <fieldset>
                             <legend>Latest</legend>
                             <h6>
