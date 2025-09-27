@@ -25,13 +25,11 @@ export default function BiggestChange() {
                         <fieldset>
                             <legend>Latest</legend>
                             <h6>
-                                {changeAccessor().name}
-                                &nbsp;
+                                {changeAccessor().name + ' '}
                                 <Show when={diff < newest}>
-                                    +{diff.toLocaleString()} &nbsp;→&nbsp;
+                                    +{diff.toLocaleString() + ' → '}
                                 </Show>
-                                {newest.toLocaleString()}
-                                &nbsp;
+                                {newest.toLocaleString() + ' '}
                                 signatures at {time}
                             </h6>
                         </fieldset>
