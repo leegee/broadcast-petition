@@ -12,10 +12,11 @@ export default function App() {
   return (
     <main class={styles.main}>
       <div class={styles.overlay}>
+
         <PetitionMeta />
 
         <div style="margin-top:0; margin: 1em; gap: 1em; width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: center;">
-          <div style="width: 50%; text-align: center">
+          <div style="height: 100%; padding: 1em; width: 50%; text-align: center; display: flex; flex-direction:column; gap: 0.8em; align-items: center; justify-content: space-around">
             <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
             <ThresholdProgressBar type="DEBATE" />
           </div>
@@ -25,24 +26,24 @@ export default function App() {
         </div>
 
         <div style="width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: flex-start;">
-          <div style="width: 50%">
+          <div style="width: 50%; display: flex;    justify-content: center; flex-direction: column; align-items: center;">
             <TopSignatures />
           </div>
-          <div style="width: 50%">
+          <div style="width: 50%; display: flex;    justify-content: center; flex-direction: column; align-items: center;">
             <TopRegions />
           </div>
         </div>
       </div >
 
 
-      <div style="width: 100%; background-color: rgb(9, 9, 194); ">
+      <nav style="display: flex; width: 100%; background-color: rgb(9, 9, 194); ">
         <div>
           <PetitionLink />
         </div>
         <div style="width: 60%">
           <Ticker />
         </div>
-      </div>
+      </nav>
 
       <PetitionMap />
 

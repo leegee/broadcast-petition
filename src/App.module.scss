@@ -2,9 +2,15 @@
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    background-color: hsl(240, 94%, 2%);
 }
 
 .overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    height: calc(100vh - 5em);
     z-index: 1;
     position: fixed;
     top: 0;

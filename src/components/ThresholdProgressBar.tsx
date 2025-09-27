@@ -48,7 +48,7 @@ export default function ThresholdProgressBar(props: ThresholdProgressBarProps) {
     });
 
     return (
-        <button class={"chip primary " + styles.container}>
+        <button class={"chip primary large  " + styles.container}>
             <progress class="max" value={signature_count()} max={threshold}></progress>
             <span>{label()}</span>
         </button>
