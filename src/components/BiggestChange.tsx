@@ -4,7 +4,7 @@ import { biggestChange } from "../petitionStore";
 
 interface BiggestChange {
     name: string;
-    old: number;
+    diff: number;
     new: number;
     timestamp: string | Date;
 }
@@ -15,15 +15,16 @@ export default function BiggestChange() {
     return (
         <Show when={change()}>
             {(changeAccessor) => {
-                const delta = changeAccessor().new - changeAccessor().old;
+                console.log('xxx', changeAccessor())
+                const diff = changeAccessor().diff;
                 const time = new Date(changeAccessor().timestamp).toLocaleTimeString();
 
                 return (
-                    <article class={styles["biggest-change"]}>
+                    <article class={styles["biggest-change"] + " center-align middle-align max full-width"}>
                         <fieldset>
                             <legend>Latest</legend>
                             <h6>
-                                {changeAccessor().name} +{delta.toLocaleString()} &nbsp;→&nbsp;{changeAccessor().new.toLocaleString()} signatures
+                                {changeAccessor().name} +{diff.toLocaleString()} &nbsp;→&nbsp;{changeAccessor().new.toLocaleString()} signatures
                                 at {time}
                             </h6>
                         </fieldset>

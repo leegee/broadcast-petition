@@ -32,7 +32,7 @@ export default function RotatingConstituencies(props: RotatingConstituenciesProp
 
     return (
         <article class="card padding margin border">
-            <h6>Top Constituencies</h6>
+            <h6>Constituencies With The Most Signatures</h6>
 
             <div class={styles.rotatingList}>
                 <Transition name="slide" mode="outin">
