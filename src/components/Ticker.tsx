@@ -7,7 +7,7 @@ interface TickerProps {
     speed?: number; // pixels per second
 }
 
-export default function Ticker({ speed = 50 }: TickerProps) {
+export default function Ticker({ speed = 300 }: TickerProps) {
     let containerRef: HTMLDivElement | null = null;
     let innerRef: HTMLDivElement | null = null;
 
