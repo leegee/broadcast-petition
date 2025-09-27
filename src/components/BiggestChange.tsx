@@ -17,6 +17,7 @@ export default function BiggestChange() {
             {(changeAccessor) => {
                 console.log('xxx', changeAccessor())
                 const diff = changeAccessor().diff;
+                const newest = changeAccessor().new;
                 const time = new Date(changeAccessor().timestamp).toLocaleTimeString();
 
                 return (
@@ -24,8 +25,14 @@ export default function BiggestChange() {
                         <fieldset>
                             <legend>Latest</legend>
                             <h6>
-                                {changeAccessor().name} +{diff.toLocaleString()} &nbsp;→&nbsp;{changeAccessor().new.toLocaleString()} signatures
-                                at {time}
+                                {changeAccessor().name}
+                                &nbsp;
+                                <Show when={diff < newest}>
+                                    +{diff.toLocaleString()} &nbsp;→&nbsp;
+                                </Show>
+                                {newest.toLocaleString()}
+                                &nbsp;
+                                signatures at {time}
                             </h6>
                         </fieldset>
                     </article>
