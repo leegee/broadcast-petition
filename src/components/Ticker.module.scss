@@ -1,0 +1,23 @@
+.tickerContainer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
+    background: #111;
+    color: #fff;
+    white-space: nowrap;
+    padding: 0.5rem;
+    font-weight: bold;
+    z-index: 1000;
+}
+
+.tickerInner {
+    display: inline-block;
+    white-space: nowrap;
+    will-change: transform; // improve animation performance
+}
+
+.item {
+    display: inline-block;
+    margin-right: 2rem;
+}

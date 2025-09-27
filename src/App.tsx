@@ -5,6 +5,7 @@ import PetitionMeta from "./components/PetitionMeta";
 import PetitionLink from "./components/PetitionLink";
 import TopSignatures from "./components/TopSignatures";
 import RotatingConstituencies from "./components/RotatingConstituencies";
+import Ticker from "./components/Ticker";
 
 export default function App() {
   return (
@@ -13,15 +14,8 @@ export default function App() {
         <PetitionMeta />
         <BiggestChange />
         <TopSignatures />
-        {/* <div class="grid">
-          <div class="s6">
-            <TopSignatures />
-          </div>
-          <div class="s6">
-            <RotatingConstituencies />
-          </div>
-        </div> */}
-        <PetitionLink />
+        {/* <PetitionLink /> */}
+        <Ticker />
       </div>
       <PetitionMap />
     </main>
