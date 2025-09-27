@@ -8,7 +8,7 @@ export default function PetitionLink() {
         <>
             <Show when={!petitionMeta.closed_at}>
                 <div class={styles.sign}>
-                    <h2 class="right-padding">
+                    <h2>
                         <Flag />
                         <span>
                             Sign at{" "}

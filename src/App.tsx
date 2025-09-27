@@ -35,11 +35,11 @@ export default function App() {
       </div >
 
 
-      <div style="width: 100%; background-color: rgb(9, 9, 194); width: 100%; display: flex; flex-direction:row; justify-content: center; align-items: flex-start;">
-        <div style="width: 50: margin-right: 0;">
+      <div style="width: 100%; background-color: rgb(9, 9, 194); ">
+        <div>
           <PetitionLink />
         </div>
-        <div style="width: 50%">
+        <div style="width: 60%">
           <Ticker />
         </div>
       </div>

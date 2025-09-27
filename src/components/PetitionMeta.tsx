@@ -21,7 +21,13 @@ export default function PetitionMeta() {
                         {petitionMeta.additional_details && <span>{' ' + petitionMeta.additional_details}</span>}
                     </p>
                     <p class="right-align no-margin">
-                        &mdash;&nbsp;<span class='italic'>{petitionMeta.creator_name}</span>
+                        &mdash;&nbsp;<span class={`italic ${styles.creator_name}`}>
+                            {petitionMeta.creator_name},
+                        </span>
+                        <span>
+                            {new Date(petitionMeta.created_at!).toLocaleDateString()} {" at "}
+                            {new Date(petitionMeta.created_at!).toLocaleTimeString()}
+                        </span>
                     </p>
                 </blockquote>
             </article>
