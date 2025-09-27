@@ -13,7 +13,7 @@ export default function PetitionLink() {
                         <span>
                             Sign at{" "}
                             <a
-                                class="left-margin small-margin"
+                                class=""
                                 href={`https://petition.parliament.uk/petitions/${PETITION_ID}/signatures/new`}
                             >
                                 {`petition.parliament.uk/petitions/${PETITION_ID}`}
