@@ -1,6 +1,35 @@
-.map {
-    width: 50vw;
+.map-container {
+    width: 40vw;
     height: 100vh;
     position: fixed;
     right: 0;
+    top: 0;
+}
+
+.map {
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.legend {
+    position: absolute;
+    top: 1em;
+    left: 0;
+    padding: 10pt;
+    border-radius: 3pt;
+    font-size: 0.85rem;
+}
+
+.legend div {
+    display: flex;
+    align-items: center;
+    margin-bottom: pt;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
 }

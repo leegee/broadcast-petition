@@ -1,9 +1,10 @@
 import styles from "./PetitionMap.module.scss";
-import { onMount, onCleanup } from "solid-js";
+import { onMount, onCleanup, createSignal } from "solid-js";
 import maplibregl from "maplibre-gl";
 import { fetchPetitionData, countsStore } from "../petitionStore";
 
 const POLL_INTERVAL = 60_000;
+const CLRS = ["#141", "#292", "#2f2"];
 
 export default function PetitionMap() {
   let map: maplibregl.Map;
@@ -11,9 +12,19 @@ export default function PetitionMap() {
   let intervalId: number;
   let geoData: any;
 
+  const [legendSteps, setLegendSteps] = createSignal<{ value: number; color: string }[]>([]);
+
   function getSignatureRange() {
     const values = Object.values(countsStore).map(c => c.count);
     return { min: Math.min(...values), max: Math.max(...values) };
+  }
+
+  function updateLegend(min: number, max: number) {
+    const steps = [min, Math.round((min + max) / 2), max].map((value, i) => ({
+      value,
+      color: CLRS[i],
+    }));
+    setLegendSteps(steps);
   }
 
   async function updateMapData() {
@@ -36,13 +47,15 @@ export default function PetitionMap() {
         ["linear"],
         ["get", "signatures"],
         min,
-        "#14532d",
+        CLRS[0],
         (min + max) / 2,
-        "#22c55e",
+        CLRS[1],
         max,
-        "#bbf7d0",
+        CLRS[2],
       ]);
     }
+
+    updateLegend(min, max);
   }
 
   onMount(async () => {
@@ -62,7 +75,6 @@ export default function PetitionMap() {
     map = new maplibregl.Map({
       container: "map",
       style: { version: 8, sources: {}, layers: [] },
-      // center: [-1.5, 54],
       center: [-5.2, 55.3],
       zoom: 5,
       attributionControl: false,
@@ -83,15 +95,17 @@ export default function PetitionMap() {
             ["linear"],
             ["get", "signatures"],
             min,
-            "#14532d",
+            CLRS[0],
             (min + max) / 2,
-            "#22c55e",
+            CLRS[1],
             max,
-            "#bbf7d0",
+            CLRS[2],
           ],
           "fill-opacity": 0.9,
         },
       });
+
+      updateLegend(min, max);
 
       map.on("mousemove", "constituency-fills", (e) => {
         map.getCanvas().style.cursor = "pointer";
@@ -120,5 +134,21 @@ export default function PetitionMap() {
     clearInterval(intervalId);
   });
 
-  return <div id="map" class={styles.map} />;
+  return (
+    <div class={styles["map-container"]}>
+      <div id="map" class={styles.map} />
+
+      <div class={styles.legend}>
+        {legendSteps().map(step => (
+          <div>
+            <div
+              class={styles["legend-color"]}
+              style={{ "background-color": step.color }}
+            />
+            <span>{step.value.toLocaleString()}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
