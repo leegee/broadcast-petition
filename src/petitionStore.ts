@@ -7,6 +7,7 @@ export const GOVERNMENT_RESPONSE_THRESHOLD = 10000;
 export const DEBATE_THRESHOLD = 100000;
 
 export interface PetitionMeta {
+    creator_name: string;
     action: string;
     background: string;
     additional_details: string;
@@ -62,6 +63,7 @@ export async function fetchPetitionData() {
         };
 
         setPetitionMeta({
+            creator_name: meta.creator_name,
             action: meta.action,
             background: meta.background,
             additional_details: meta.additional_details,

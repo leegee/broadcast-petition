@@ -1,6 +1,25 @@
 .biggest-change {
     padding-top: 0 !important;
-    text-wrap: nowrap;
+
+    /* use this to prevent wrapping (text-wrap is invalid) */
+    white-space: nowrap;
+
+    /* required for ellipsis to work */
     overflow: hidden;
     text-overflow: ellipsis;
+
+    /* text-overflow requires a constrained inline/block element */
+    display: inline-block;
+    max-width: 100%;
+
+    /* target direct children except .name */
+    .name {
+        font-weight: bold;
+        color: var(--on-surface) !important;
+        opacity: 0.8;
+    }
+
+    .values {
+        opacity: 0.8;
+    }
 }

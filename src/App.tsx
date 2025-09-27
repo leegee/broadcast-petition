@@ -16,7 +16,7 @@ export default function App() {
       <div class={styles.overlay}>
         <PetitionMeta />
 
-        <div style="margin-bottom: 1em; gap: 1em; width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: center;">
+        <div style="margin-top:0; margin: 1em; gap: 1em; width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: center;">
           <div style="width: 50%; text-align: center">
             <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
             <ThresholdProgressBar type="DEBATE" />

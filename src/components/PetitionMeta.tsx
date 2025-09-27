@@ -16,8 +16,13 @@ export default function PetitionMeta() {
                 </h2>
 
                 <blockquote>
-                    <p><strong>{petitionMeta.background}</strong></p>
-                    {petitionMeta.additional_details && <p>{petitionMeta.additional_details}</p>}
+                    <p class="left-align left-margin">
+                        <strong>{petitionMeta.background}</strong>
+                        {petitionMeta.additional_details && <span>{' ' + petitionMeta.additional_details}</span>}
+                    </p>
+                    <p class="right-align no-margin">
+                        &mdash;&nbsp;<span class='italic'>{petitionMeta.creator_name}</span>
+                    </p>
                 </blockquote>
             </article>
         </Show>
