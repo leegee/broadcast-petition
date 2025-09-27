@@ -4,7 +4,13 @@ import maplibregl from "maplibre-gl";
 import { fetchPetitionData, countsStore } from "../petitionStore";
 
 const POLL_INTERVAL = 60_000;
-const CLRS = ["#141", "#292", "#2f2"];
+// const CLRS = ["#141", "#292", "#2f2"];
+const CLRS = [
+  "#a22",
+  "#ddf",
+  "#00f"
+];
+
 
 export default function PetitionMap() {
   let map: maplibregl.Map;
