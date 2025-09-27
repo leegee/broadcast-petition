@@ -1,7 +1,7 @@
 import styles from "./PetitionMap.module.scss";
 import { onMount, onCleanup, createSignal } from "solid-js";
 import maplibregl from "maplibre-gl";
-import { fetchPetitionData, countsStore, setHilitConstituencyCode } from "../petitionStore";
+import { fetchPetitionData, countsStore } from "../petitionStore";
 
 const POLL_INTERVAL = 60_000;
 const HIGHLIGHT_INTERVAL = 3000; // 3s per region
@@ -93,7 +93,7 @@ export default function PetitionMap() {
         { highlighted: true }
       );
 
-      setHilitConstituencyCode(code);
+      // setHilitConstituencyCode(code);
 
       prev = code;
       if (++idx > 100000) {
