@@ -3,7 +3,8 @@
     bottom: 0;
     width: 100%;
     overflow: hidden;
-    background: #111;
+    background: #11A;
+    border-top: #22D;
     color: #fff;
     white-space: nowrap;
     padding: 0.5rem;
@@ -14,10 +15,10 @@
 .tickerInner {
     display: inline-block;
     white-space: nowrap;
-    will-change: transform; // improve animation performance
+    will-change: transform;
 }
 
 .item {
     display: inline-block;
-    margin-right: 2rem;
+    margin-right: 1.6rem;
 }

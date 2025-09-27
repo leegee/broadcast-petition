@@ -1,6 +1,6 @@
+import styles from "./Ticker.module.scss";
 import { createMemo, onMount, onCleanup } from "solid-js";
 import { countsStore } from "../petitionStore";
-import styles from "./Ticker.module.scss";
 
 interface TickerProps {
     speed?: number; // pixels per second
@@ -27,16 +27,16 @@ export default function Ticker({ speed = 50 }: TickerProps) {
         lastTime = time;
 
         if (innerRef && innerWidth === 0) {
-            innerWidth = innerRef.scrollWidth;
+            innerWidth = (innerRef as HTMLDivElement).scrollWidth;
         }
 
         x -= speed * delta;
 
-        if (innerWidth && x <= -innerWidth) {
-            x = containerRef?.offsetWidth ?? 0;
+        if (containerRef && innerWidth && x <= -innerWidth) {
+            x = (containerRef as HTMLDivElement).offsetWidth ?? 0;
         }
 
-        if (innerRef) innerRef.style.transform = `translateX(${x}px)`;
+        if (innerRef) (innerRef as HTMLDivElement).style.transform = `translateX(${x}px)`;
 
         animationFrameId = requestAnimationFrame(step);
     };
@@ -58,7 +58,7 @@ export default function Ticker({ speed = 50 }: TickerProps) {
         <div ref={containerRef!} class={styles.tickerContainer}>
             <div ref={innerRef!} class={styles.tickerInner}>
                 {items().map((i) => (
-                    <span class={styles.item} key={i.code}>
+                    <span class={styles.item}>
                         <strong>{i.name}</strong>: {i.count.toLocaleString()}
                     </span>
                 ))}
