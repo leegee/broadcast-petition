@@ -11,10 +11,14 @@ export default function PetitionMeta() {
         >
             <>
                 {/* <article class={styles.meta + " transparent card border margin"}> */}
-                <h1 class={'padding ' + styles.title}>{petitionMeta.action}</h1>
-                <h2 class='padding'>
-                    <strong>{petitionMeta.signature_count?.toLocaleString()}</strong> total signatures
-                </h2>
+
+                <article>
+                    <h1 class={'padding center-align ' + styles.title}>{petitionMeta.action}</h1>
+                    <hr />
+                    <h3 class='padding center-align'>
+                        <strong>{petitionMeta.signature_count?.toLocaleString()}</strong> total signatures
+                    </h3>
+                </article>
 
                 <article class="border margin">
                     <blockquote class="margin">

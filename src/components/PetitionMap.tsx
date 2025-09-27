@@ -5,7 +5,7 @@ import { fetchPetitionData, countsStore } from "../petitionStore";
 
 const POLL_INTERVAL = 60_000;
 const HIGHLIGHT_INTERVAL = 3000; // 3s per region
-const CLRS = ["#622", "#ddf", "#00f"];
+const CLRS = ["#622", "#ccd", "#11f"];
 
 export default function PetitionMap() {
   let map: maplibregl.Map;
@@ -206,7 +206,7 @@ export default function PetitionMap() {
     <div class={styles["map-container"]}>
       <div id="map" class={styles.map} />
 
-      <div class={styles.legend}>
+      <article class={styles.legend}>
         {legendSteps().map((step) => (
           <div>
             <div
@@ -216,7 +216,7 @@ export default function PetitionMap() {
             <span>{step.value.toLocaleString()}</span>
           </div>
         ))}
-      </div>
+      </article>
     </div>
   );
 }

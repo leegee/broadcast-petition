@@ -1,6 +1,6 @@
-import { Component, createMemo } from "solid-js";
+import { Component, createMemo, Show } from "solid-js";
 import styles from "./ThresholdProgressBar.module.scss";
-import { petitionMeta, GOVERNMENT_RESPONSE_THRESHOLD, DEBATE_THRESHOLD } from "../petitionStore";
+import { petitionMeta, GOVERNMENT_RESPONSE_THRESHOLD, DEBATE_THRESHOLD, error } from "../petitionStore";
 
 interface ThresholdProgressBarProps {
     type: "GOVERNMENT_RESPONSE" | "DEBATE";
@@ -48,10 +48,12 @@ export default function ThresholdProgressBar(props: ThresholdProgressBarProps) {
     });
 
     return (
-        <button class={"chip primary large  " + styles.container}>
-            <progress class="max" value={signature_count()} max={threshold}></progress>
-            <span>{label()}</span>
-        </button>
+        <Show when={!error() && petitionMeta.action}>
+            <button class={"chip primary large  " + styles.container}>
+                <progress class="max" value={signature_count()} max={threshold}></progress>
+                <span>{label()}</span>
+            </button>
+        </Show>
 
     );
 };
