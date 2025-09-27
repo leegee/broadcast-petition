@@ -14,7 +14,7 @@ export default function App() {
         <PetitionMeta />
         <BiggestChange />
         <TopSignatures />
-        {/* <PetitionLink /> */}
+        <PetitionLink />
         <Ticker />
       </div>
       <PetitionMap />

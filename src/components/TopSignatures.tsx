@@ -16,7 +16,7 @@ export default function TopSignatures(props: TopSignaturesProps) {
     );
 
     return (
-        <article class="card padding margin border">
+        <article class={`border ${styles.tops}`}>
             <h6>Top Constituencies</h6>
             <table class={styles.table + " border"}>
                 <thead>

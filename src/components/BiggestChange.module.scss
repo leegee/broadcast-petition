@@ -1,3 +1,6 @@
 .biggest-change {
     padding-top: 0 !important;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
