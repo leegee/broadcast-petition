@@ -30,7 +30,7 @@ export interface BiggestChange {
 }
 export const [biggestChange, setBiggestChange] = createSignal<BiggestChange | null>(null);
 
-export const [loading, setLoading] = createSignal(false);
+export const [loading, setLoading] = createSignal(true);
 export const [error, setError] = createSignal<string | null>(null);
 
 export async function fetchPetitionData() {
