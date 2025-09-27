@@ -1,3 +1,10 @@
 .hidden {
     display: none;
 }
+
+// move
+.highlighted {
+    border: 2px solid white; // table row highlight
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
