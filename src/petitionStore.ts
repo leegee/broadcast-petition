@@ -45,11 +45,9 @@ export interface BiggestChange {
 }
 export const [biggestChange, setBiggestChange] = createSignal<BiggestChange | null>(null);
 
-export const [loading, setLoading] = createSignal(true);
 export const [error, setError] = createSignal<string | null>(null);
 
 export async function fetchPetitionData() {
-    setLoading(true);
     setError(null);
 
     try {
@@ -111,13 +109,11 @@ export async function fetchPetitionData() {
 
         setCountsStore(newCounts);
 
-        setLoading(false);
         return { meta, counts: newCounts };
     }
 
     catch (err: any) {
         setError(err.message || "Unknown error");
-        setLoading(false);
         return null;
     }
 }

@@ -1,6 +1,6 @@
 import styles from "./TopSignatures.module.scss";
 import { createMemo, For, Show } from "solid-js";
-import { countsStore, error, loading, petitionMeta } from "../petitionStore";
+import { countsStore, error, petitionMeta } from "../petitionStore";
 
 interface TopSignaturesProps {
     n?: number;
@@ -16,15 +16,11 @@ export default function TopSignatures(props: TopSignaturesProps) {
     );
 
     return (
-        <Show
-            when={!loading() && !error() && petitionMeta.action}
-            fallback={
-                <Show when={loading()} fallback={<div>Error loading petition info: {error()}</div>}>
-                    <div class="loading" />
-                </Show>
-            }
+        <Show when={!error() && petitionMeta.action}
+            fallback={<Show when={!petitionMeta.action}>
+                <div class="loading"> Error loading petition info: {error()} </div>
+            </Show>}
         >
-
             <article class={`border ${styles.tops}`}>
                 <h6>Constituencies With The Most Signatures</h6>
                 <table class={styles.table + " border"}>

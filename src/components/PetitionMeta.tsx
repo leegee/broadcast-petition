@@ -1,15 +1,12 @@
 import styles from "./PetitionMeta.module.scss";
-import { petitionMeta, loading, error } from "../petitionStore";
+import { petitionMeta, error } from "../petitionStore";
 import { Show } from "solid-js";
 
 export default function PetitionMeta() {
     return (
-        <Show
-            when={!loading() && !error() && petitionMeta.action}
+        <Show when={!error() && petitionMeta.action}
             fallback={
-                <Show when={loading()} fallback={<div>Error loading petition info: {error()}</div>}>
-                    <div class="loading" />
-                </Show>
+                <Show when={error()} > <div class="error" /> </Show>
             }
         >
             <article class={styles.meta + " transparent card border margin"}>

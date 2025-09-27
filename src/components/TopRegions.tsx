@@ -1,7 +1,6 @@
 import styles from "./TopRegions.module.scss";
 import { createMemo, For, Show } from "solid-js";
-import { countsStore, error, loading, petitionMeta, regionCountsStore } from "../petitionStore";
-
+import { error, petitionMeta, regionCountsStore } from "../petitionStore";
 interface TopRegionsProps {
     n?: number;
 }
@@ -16,15 +15,11 @@ export default function TopRegions(props: TopRegionsProps) {
     );
 
     return (
-        <Show
-            when={!loading() && !error() && petitionMeta.action}
+        <Show when={!error() && petitionMeta.action}
             fallback={
-                <Show when={loading()} fallback={<div>Error loading petition info: {error()}</div>}>
-                    <div class="loading" />
-                </Show>
+                <Show when={error()}> <div class="error" /> </Show>
             }
         >
-
             <article class={`border ${styles.tops}`}>
                 <h6>Regions With The Most Signatures</h6>
                 <table class={styles.table + " border"}>
