@@ -1,27 +1,25 @@
 import styles from "./PetitionMap.module.scss";
 import { onMount, onCleanup, createSignal } from "solid-js";
 import maplibregl from "maplibre-gl";
-import { fetchPetitionData, countsStore } from "../petitionStore";
+import { fetchPetitionData, countsStore, setHilitConstituencyCode } from "../petitionStore";
 
 const POLL_INTERVAL = 60_000;
-// const CLRS = ["#141", "#292", "#2f2"];
-const CLRS = [
-  "#a22",
-  "#ddf",
-  "#00f"
-];
-
+const HIGHLIGHT_INTERVAL = 3000; // 3s per region
+const CLRS = ["#622", "#ddf", "#00f"];
 
 export default function PetitionMap() {
   let map: maplibregl.Map;
   let popup: maplibregl.Popup;
   let intervalId: number;
+  let highlightId: number;
   let geoData: any;
 
-  const [legendSteps, setLegendSteps] = createSignal<{ value: number; color: string }[]>([]);
+  const [legendSteps, setLegendSteps] = createSignal<
+    { value: number; color: string }[]
+  >([]);
 
   function getSignatureRange() {
-    const values = Object.values(countsStore).map(c => c.count);
+    const values = Object.values(countsStore).map((c) => c.count);
     return { min: Math.min(...values), max: Math.max(...values) };
   }
 
@@ -59,21 +57,62 @@ export default function PetitionMap() {
         max,
         CLRS[2],
       ]);
+
+      map.setPaintProperty(layer.id, "fill-outline-color", [
+        "case",
+        ["boolean", ["feature-state", "highlighted"], false],
+        "#ffffff",
+        "lime"
+      ]);
     }
 
     updateLegend(min, max);
   }
 
+  function startHighlightTour() {
+    const codes = Object.keys(countsStore);
+    let idx = 0;
+    let prev: string | null = null;
+
+    highlightId = window.setInterval(() => {
+      if (!codes.length) return;
+
+      const code = codes[idx % codes.length];
+
+      if (prev) {
+        // clear previous highlight
+        map.setFeatureState(
+          { source: "constituencies", id: prev },
+          { highlighted: false }
+        );
+      }
+
+      // set new highlight
+      map.setFeatureState(
+        { source: "constituencies", id: code },
+        { highlighted: true }
+      );
+
+      setHilitConstituencyCode(code);
+
+      prev = code;
+      if (++idx > 100000) {
+        idx = 0;
+      }
+    }, HIGHLIGHT_INTERVAL);
+  }
+
   onMount(async () => {
     geoData = await fetch(
       "Westminster_Parliamentary_Constituencies_July_2024_Boundaries_UK_BGC_-8097874740651686118.geojson"
-    ).then(r => r.json());
+    ).then((r) => r.json());
 
     await fetchPetitionData();
 
     geoData.features.forEach((f: any) => {
       const code = f.properties.PCON24CD.toUpperCase();
       f.properties.signatures = countsStore[code]?.count || 0;
+      f.id = code; // ensure each feature has a unique id for setFeatureState
     });
 
     const { min, max } = getSignatureRange();
@@ -111,7 +150,29 @@ export default function PetitionMap() {
         },
       });
 
+      // add an outline layer that reacts to feature-state
+      map.addLayer({
+        id: "constituency-outline",
+        type: "line",
+        source: "constituencies",
+        paint: {
+          "line-color": [
+            "case",
+            ["boolean", ["feature-state", "highlighted"], false],
+            "white",
+            "transparent",
+          ],
+          "line-width": [
+            "case",
+            ["boolean", ["feature-state", "highlighted"], false],
+            3,
+            0,
+          ],
+        },
+      });
+
       updateLegend(min, max);
+      startHighlightTour();
 
       map.on("mousemove", "constituency-fills", (e) => {
         map.getCanvas().style.cursor = "pointer";
@@ -138,6 +199,7 @@ export default function PetitionMap() {
   onCleanup(() => {
     map?.remove();
     clearInterval(intervalId);
+    clearInterval(highlightId);
   });
 
   return (
@@ -145,7 +207,7 @@ export default function PetitionMap() {
       <div id="map" class={styles.map} />
 
       <div class={styles.legend}>
-        {legendSteps().map(step => (
+        {legendSteps().map((step) => (
           <div>
             <div
               class={styles["legend-color"]}
