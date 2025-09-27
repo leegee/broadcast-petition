@@ -1,3 +1,4 @@
+// from screen-capture home-broadcast
 import styles from "./Ticker.module.scss";
 import { createMemo, onMount, onCleanup } from "solid-js";
 import { countsStore } from "../petitionStore";
