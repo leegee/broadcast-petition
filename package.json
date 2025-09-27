@@ -26,6 +26,7 @@
   "dependencies": {
     "beercss": "^3.12.8",
     "flag-icons": "^7.5.0",
+    "playwright": "^1.55.1",
     "solid-js": "^1.9.5",
     "solid-transition-group": "^0.3.0"
   }
