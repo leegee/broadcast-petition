@@ -1,10 +1,21 @@
-.meta {
-    .title {
-        text-transform: capitalize;
-    }
+.title,
+.subtitle {
+    text-transform: capitalize;
+    font-size: 24pt !important;
+}
 
-    .creator_name {
-        text-transform: capitalize;
-        margin-right: 0.3em;
-    }
+.title {
+    font-size: 32pt !important;
+}
+
+.subtitle {
+    font-size: 14pt !important;
+    font-weight: 100;
+    margin: 0 !important;
+    --_padding: 0;
+}
+
+.creator_name {
+    text-transform: capitalize;
+    margin-right: 0.3em;
 }
