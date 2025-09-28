@@ -117,7 +117,7 @@ export default function PetitionMap() {
         type: "line",
         source: "constituencies",
         paint: {
-          "line-color": "lime",
+          "line-color": "white",
           "line-width": 5,
         },
         filter: ["==", ["get", "id"], ""],
