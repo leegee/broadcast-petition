@@ -153,6 +153,8 @@ export default function PetitionMap() {
   createEffect(() => {
     const id = highlightedFeatureId();
     if (!map) return;
+    if (!map.isStyleLoaded()) return;
+    if (!map.getLayer("highlight-border")) return;
 
     // Update highlight border
     map.setFilter("highlight-border", ["==", ["get", "id"], id || ""]);
@@ -167,12 +169,15 @@ export default function PetitionMap() {
     if (!coords) return;
 
     // Use requestAnimationFrame to ensure smooth animation
-    requestAnimationFrame(() => {
-      map.flyTo({
-        center: coords,
-        zoom: 9.5,
-        duration: 5000,
-        curve: 1.2,
+    map.once("idle", () => {
+      requestAnimationFrame(() => {
+        map.flyTo({
+          center: coords,
+          zoom: 9.5,
+          screenSpeed: 0.5,
+          maxDuration: 2_000,
+          // curve: 1.2,
+        });
       });
     });
   });
@@ -181,7 +186,7 @@ export default function PetitionMap() {
     <div class={styles["map-container"]}>
       <div id="map" class={styles.map} />
 
-      <article class={styles.legend}>
+      <article class={"transparent " + styles.legend}>
         {legendSteps().map((step) => (
           <div>
             <div
