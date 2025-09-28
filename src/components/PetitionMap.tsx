@@ -2,24 +2,28 @@ import styles from "./PetitionMap.module.scss";
 import { onMount, onCleanup, createSignal, createEffect } from "solid-js";
 import maplibregl from "maplibre-gl";
 import { fetchPetitionData, countsStore } from "../petitionStore";
-import { highlightedFeatureId } from "./highlight.store";
+import { highlightedFeatureId, setHighlightedFeatureId } from "./highlight.store";
 import { getFeatureCentroid } from "../lib/getFeatureCentroid";
 
-const POLL_INTERVAL = 60_000;
+const POLL_INTERVAL = 60_000;       // fetch petition data
+const HIGHLIGHT_INTERVAL = 3000;    // 3s per highlight
+const HIGHLIGHT_PAUSE = 10_000;     // 10s pause after full cycle
 const CLRS = ["#4229", "#ccd", "#11f"];
 
 export default function PetitionMap() {
   let map: maplibregl.Map;
   let popup: maplibregl.Popup;
   let intervalId: number;
+  let highlightTimeout: number;
   let geoData: any;
 
-  const [legendSteps, setLegendSteps] = createSignal<
-    { value: number; color: string }[]
-  >([]);
+  const [legendSteps, setLegendSteps] = createSignal<{ value: number; color: string }[]>([]);
 
+  // -------------------------
+  // Helpers
+  // -------------------------
   function getSignatureRange() {
-    const values = Object.values(countsStore).map((c) => c.count);
+    const values = Object.values(countsStore).map(c => c.count);
     return { min: Math.min(...values), max: Math.max(...values) };
   }
 
@@ -59,19 +63,49 @@ export default function PetitionMap() {
     updateLegend(min, max);
   }
 
+  // -------------------------
+  // Highlight tour
+  // -------------------------
+  function startHighlightTour() {
+    const codes = Object.keys(countsStore);
+    let idx = 0;
+
+    function highlightNext() {
+      if (!codes.length) return;
+
+      const code = codes[idx];
+      setHighlightedFeatureId(code);
+
+      idx++;
+      if (idx < codes.length) {
+        highlightTimeout = window.setTimeout(highlightNext, HIGHLIGHT_INTERVAL);
+      } else {
+        // pause 10s after full cycle
+        highlightTimeout = window.setTimeout(() => {
+          idx = 0;
+          highlightNext();
+        }, HIGHLIGHT_PAUSE);
+      }
+    }
+
+    highlightNext();
+  }
+
+  // -------------------------
+  // Mount
+  // -------------------------
   onMount(async () => {
     geoData = await fetch(
       "Westminster_Parliamentary_Constituencies_July_2024_Boundaries_UK_BGC_-8097874740651686118.geojson"
-    ).then((r) => r.json());
+    ).then(r => r.json());
 
     await fetchPetitionData();
 
-    // Add an id property for filtering
     geoData.features.forEach((f: any) => {
       const code = f.properties.PCON24CD.toUpperCase();
       f.properties.signatures = countsStore[code]?.count || 0;
-      f.properties.id = code; // for highlight layer filter
-      f.id = code;           // for setFeatureState or other uses
+      f.properties.id = code;
+      f.id = code;
     });
 
     const { min, max } = getSignatureRange();
@@ -89,7 +123,7 @@ export default function PetitionMap() {
     map.on("load", () => {
       map.addSource("constituencies", { type: "geojson", data: geoData });
 
-      // Main heatmap/fill layer
+      // Fill layer
       map.addLayer({
         id: "constituency-fills",
         type: "fill",
@@ -107,7 +141,7 @@ export default function PetitionMap() {
         },
       });
 
-      // Overlay layer for highlight
+      // Highlight border overlay
       map.addLayer({
         id: "highlight-border",
         type: "line",
@@ -115,11 +149,34 @@ export default function PetitionMap() {
         paint: {
           "line-color": "white",
           "line-width": 5,
+          "line-dasharray": ["literal", [1, 2, 2]],
         },
-        filter: ["==", ["get", "id"], ""], // initially no feature
+        filter: ["==", ["get", "id"], ""],
       });
 
       updateLegend(min, max);
+
+      // Popup hover
+      map.on("mousemove", "constituency-fills", (e) => {
+        map.getCanvas().style.cursor = "pointer";
+        if (e.features?.length) {
+          const f = e.features[0];
+          popup
+            .setLngLat(e.lngLat)
+            .setHTML(
+              `<strong>${f.properties.PCON24NM}</strong><br/>${f.properties.signatures.toLocaleString()} signatures`
+            )
+            .addTo(map);
+        }
+      });
+
+      map.on("mouseleave", "constituency-fills", () => {
+        map.getCanvas().style.cursor = "";
+        popup.remove();
+      });
+
+      // Start highlight tour
+      startHighlightTour();
     });
 
     intervalId = window.setInterval(updateMapData, POLL_INTERVAL);
@@ -128,31 +185,38 @@ export default function PetitionMap() {
   onCleanup(() => {
     map?.remove();
     clearInterval(intervalId);
+    clearTimeout(highlightTimeout);
   });
 
-  // React to external highlightedFeatureId()
+  // -------------------------
+  // React to highlightedFeatureId changes
+  // -------------------------
   createEffect(() => {
     const id = highlightedFeatureId();
+    if (!map) return;
 
-    if (id && map) {
-      // Update highlight style
-      map.setFilter("highlight-fill", ["==", ["get", "id"], id]);
-      map.setFilter("highlight-border", ["==", ["get", "id"], id]);
+    // Update highlight border
+    map.setFilter("highlight-border", ["==", ["get", "id"], id || ""]);
 
-      const coords = getFeatureCentroid(map, "constituency-fills", id);
-      if (coords) {
-        map.once("render", () => {
-          map.flyTo({
-            center: coords,
-            zoom: 9,
-            duration: 5000,
-            curve: 1.2,
-          });
-        });
-      }
-    }
+    if (!id) return;
+
+    const coords = getFeatureCentroid(map, "constituency-fills", id);
+    if (!coords) return;
+
+    // Use requestAnimationFrame to ensure smooth animation
+    requestAnimationFrame(() => {
+      map.flyTo({
+        center: coords,
+        zoom: 9.5,
+        duration: 5000,
+        curve: 1.2,
+      });
+    });
   });
 
+  // -------------------------
+  // Render
+  // -------------------------
   return (
     <div class={styles["map-container"]}>
       <div id="map" class={styles.map} />
