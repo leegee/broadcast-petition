@@ -117,9 +117,8 @@ export default function PetitionMap() {
         type: "line",
         source: "constituencies",
         paint: {
-          "line-color": "white",
+          "line-color": "lime",
           "line-width": 5,
-          "line-dasharray": ["literal", [1, 2, 2]],
         },
         filter: ["==", ["get", "id"], ""],
       });
@@ -178,7 +177,7 @@ export default function PetitionMap() {
       requestAnimationFrame(() => {
         map.flyTo({
           center: coords,
-          zoom: 9.5,
+          zoom: 8.5,
           screenSpeed: 0.5,
           maxDuration: 2_000,
           // curve: 1.2,
