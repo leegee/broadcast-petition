@@ -14,9 +14,9 @@ export default function PetitionMeta() {
                 {/* <article class={styles.meta + " transparent card border margin"}> */}
 
                 <article>
-                    <h1 class={'padding center-align ' + styles.title}>{petitionMeta.action}</h1>
+                    <h1 class={'padding center-align stroked-black ' + styles.title}>{petitionMeta.action}</h1>
                     <hr />
-                    <h3 class='padding center-align'>
+                    <h3 class='padding center-align stroked-black' style="z-index: 20; position: relative;">
                         <strong>{petitionMeta.signature_count?.toLocaleString()}</strong> total signatures
                     </h3>
 

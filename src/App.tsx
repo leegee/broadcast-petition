@@ -1,5 +1,5 @@
 import styles from "./App.module.scss";
-import BiggestChange from "./components/BiggestChange";
+import BiggestChange from "./components/LatestChange";
 import PetitionMap from "./components/PetitionMap";
 import PetitionMeta from "./components/PetitionMeta";
 import PetitionLink from "./components/PetitionLink";

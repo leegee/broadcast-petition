@@ -1,4 +1,4 @@
-import styles from "./BiggestChange.module.scss";
+import styles from "./LatestChange.module.scss";
 import { createMemo, createSignal, Show } from "solid-js";
 import { highlightedFeatureId } from "./highlight.store";
 
@@ -25,7 +25,7 @@ export default function BiggestChange() {
 
                 return (
                     <article class={`
-                        ${styles["biggest-change"]} secondary center-align middle-align margin padding
+                        ${styles.container} secondary center-align middle-align margin padding max
                         ${highlightedFeatureId() === changeAccessor().id ? 'highlighted ' + styles.highlighted : ''}
                     ` } >
                         <h6>Latest</h6>

@@ -1,5 +1,5 @@
 .container {
-    z-index: 0;
+    z-index: 1;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -14,12 +14,9 @@
 
 .spike {
     z-index: 0;
-    position: relative;
-    // opacity: 0.5;
-    // display: flex;
-    // align-items: flex-end;
-    background: blue;
-    background-color: blue;
-    border: 1pt solid blue;
-    background: linear-gradient(white 0%, blue 30%, #00F5 100%);
+    // background-color: var(--spike-colour) !important;
+    border: 0.5px solid var(--spike-colour) !important;
+    border: none !important;
+    border-radius: 0;
+    // background: linear-gradient(white 0%, var(--spike-colour) 30%, #00F5 100%);
 }

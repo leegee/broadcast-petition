@@ -15,11 +15,11 @@ export const SpikeGraph = (props: {
     gap?: number;
 }) => {
     const height = props.height ?? DEFAULT_SPIKE_HEIGHT;
-    const color = props.color ?? "var(--tertiary)";
+    const color = props.color ?? "var(--spike-colour)";
     // const width = ; // props.width ?? DEFAULT_SPIKE_WIDTH;
 
     const spikes = createMemo(() => {
-        const values = totalSignatureCount() || [];
+        const values = totalSignatureCount().slice(0, 200) || [];
         if (!values.length) return [];
         const maxValue = Math.max(...values, 1);
         return values.map((v) => (v / maxValue) * height);
@@ -35,7 +35,7 @@ export const SpikeGraph = (props: {
                         style={{
                             width: `${Math.min(Math.max(100 / spikes().length, 1), 100)}%`,
                             height: `${spikeHeight}px`,
-                            background: `linear-gradient(white 0, ${color} 30%, rgba(255,255,255,0.5) 100%)`,
+                            background: `linear-gradient(${color} 10%, transparent 40%)`,
                         }}
                     />
                 )}

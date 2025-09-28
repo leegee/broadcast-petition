@@ -1,3 +1,7 @@
+:root {
+    --spike-colour: var(--tertiary)
+}
+
 .hidden {
     display: none;
 }
@@ -10,4 +14,9 @@ article.highlighted {
     font-weight: bold !important;
     background-color: blue !important;
     color: white !important;
+}
+
+
+.stroked-black {
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
