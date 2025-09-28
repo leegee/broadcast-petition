@@ -15,7 +15,6 @@ export default function BiggestChange() {
     return (
         <Show when={change()}>
             {(changeAccessor) => {
-                console.log('xxx', changeAccessor())
                 const diff = changeAccessor().diff;
                 const newest = changeAccessor().new;
                 const time = new Date(changeAccessor().timestamp).toLocaleTimeString();

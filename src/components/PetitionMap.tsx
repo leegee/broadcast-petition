@@ -5,8 +5,8 @@ import { fetchPetitionData, countsStore } from "../petitionStore";
 
 const POLL_INTERVAL = 60_000;
 const HIGHLIGHT_INTERVAL = 3000; // 3s per region
-// const CLRS = ["#622", "#ccd", "#11f"];
-const CLRS = ["#D70040", "orange", "yellow"];
+const CLRS = ["#4229", "#ccd", "#11f"];
+// const CLRS = ["#D70040", "orange", "yellow"];
 
 export default function PetitionMap() {
   let map: maplibregl.Map;

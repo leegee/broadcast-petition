@@ -1,10 +1,10 @@
-import { createStore } from "solid-js/store";
 import { createSignal } from "solid-js";
+import { createStore } from "solid-js/store";
+import { addSignature } from "./delta.store";
 
 export const PETITION_ID = 730194;
-
-export const GOVERNMENT_RESPONSE_THRESHOLD = 10000;
-export const DEBATE_THRESHOLD = 100000;
+export const GOVERNMENT_RESPONSE_THRESHOLD = 10_000;
+export const DEBATE_THRESHOLD = 100_000;
 
 export interface PetitionMeta {
     creator_name: string;
@@ -61,6 +61,8 @@ export async function fetchPetitionData() {
             signatures_by_country: { code: string; name: string; signature_count: number }[];
             signatures_by_region: { ons_code: string; name: string; signature_count: number }[];
         };
+
+        addSignature(meta.signature_count);
 
         setPetitionMeta({
             creator_name: meta.creator_name,
@@ -119,3 +121,5 @@ export async function fetchPetitionData() {
         return null;
     }
 }
+
+
