@@ -11,7 +11,12 @@ const MIN_COLOR = "#644";
 const MID_COLOR = "#ccd";
 const MAX_COLOR = "#11f";
 const CLRS = [MIN_COLOR, MID_COLOR, MAX_COLOR];
-const INITIAL_ZOOM = 5;
+let baseZoomLevel = 5;
+
+const UK_BOUNDS: [number, number, number, number] = [
+  -8.649357, 49.863461, // SW corner
+  1.768960, 60.860761  // NE corner
+];
 
 export default function PetitionMap() {
   let map: maplibregl.Map;
@@ -84,11 +89,9 @@ export default function PetitionMap() {
       container: "map",
       style: { version: 8, sources: {}, layers: [] },
       center: [-5.2, 55.3],
-      zoom: INITIAL_ZOOM,
+      zoom: baseZoomLevel,
       attributionControl: false,
     });
-
-    popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
 
     map.on("load", () => {
       map.addSource("constituencies", { type: "geojson", data: geoData });
@@ -125,24 +128,13 @@ export default function PetitionMap() {
 
       updateLegend(min, max);
 
-      // Popup hover
-      map.on("mousemove", "constituency-fills", (e) => {
-        map.getCanvas().style.cursor = "pointer";
-        if (e.features?.length) {
-          const f = e.features[0];
-          popup
-            .setLngLat(e.lngLat)
-            .setHTML(
-              `<strong>${f.properties.PCON24NM}</strong><br/>${f.properties.signatures.toLocaleString()} signatures`
-            )
-            .addTo(map);
-        }
+      map.fitBounds(UK_BOUNDS, {
+        padding: 40,
+        animate: false,
       });
 
-      map.on("mouseleave", "constituency-fills", () => {
-        map.getCanvas().style.cursor = "";
-        popup.remove();
-      });
+      baseZoomLevel = map.getZoom();
+      map.setMinZoom(baseZoomLevel);
     });
 
     intervalId = window.setInterval(updateMapData, POLL_INTERVAL_MS);
@@ -163,7 +155,7 @@ export default function PetitionMap() {
     map.setFilter("highlight-border", ["==", ["get", "id"], id || ""]);
 
     if (id === null) {
-      map.setZoom(INITIAL_ZOOM);
+      map.setZoom(baseZoomLevel);
     }
 
     if (!id) return;
@@ -191,7 +183,7 @@ export default function PetitionMap() {
 
       <div id="map" class={styles.map} />
 
-      <article class={"margin " + styles.legend}>
+      <article class={" " + styles.legend}>
         <ul class="list no-space">
           {legendSteps().map((step) => (
             <li>

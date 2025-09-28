@@ -1,51 +1,48 @@
-const { spawn } = require("child_process");
-const { chromium } = require("playwright");
+import { spawn } from "child_process";
+import { chromium } from "playwright";
 
 const YOUTUBE_STREAM_KEY = "YOUR_STREAM_KEY_HERE";
-const VITE_ADDRESS = "http://localhost:5173";
+const VITE_ADDRESS = "http://localhost:3000";
 const STREAM_WIDTH = 1280;
 const STREAM_HEIGHT = 720;
-const MOVE_OFFSCREEN = true;
 
-// Unique title for Playwright app window
+// A unique title so gdigrab can lock onto this window
 const WINDOW_TITLE = "Petition The UK Government";
 
-// Launch Playwright browser
 (async () => {
     console.log("🚀 Launching Playwright browser...");
+
     const browser = await chromium.launch({
-        headless: false, // must be false for FFmpeg to capture pixels
+        headless: false,
         args: [
-            `--app=${VITE_ADDRESS}`,
-            `--window-size=${STREAM_WIDTH},${STREAM_HEIGHT}`
+            `--app=${VITE_ADDRESS}`,               // frameless app window
+            `--window-size=${STREAM_WIDTH},${STREAM_HEIGHT}`, // exact size
+            "--kiosk",                             // removes window borders/title bar
+            "--disable-infobars",                  // no "Chrome is being controlled…" bar
+            "--no-sandbox"
         ]
     });
 
-    const context = await browser.newContext();
-    const page = await context.newPage();
+    const context = await browser.newContext({
+        viewport: { width: STREAM_WIDTH, height: STREAM_HEIGHT }
+    });
 
-    console.log(`🔗 Navigating to ${VITE_ADDRESS}...`);
+    const page = await context.newPage();
     await page.goto(VITE_ADDRESS);
 
-    // Set window title to a known value for FFmpeg capture
-    console.log(`✏️  Setting window title to "${WINDOW_TITLE}"`);
+    // Set document.title (may still get a suffix, see note below)
     await page.evaluate((title) => {
         document.title = title;
     }, WINDOW_TITLE);
 
-    if (MOVE_OFFSCREEN) {
-        console.log("📤 Moving browser window off-screen for background streaming...");
-        await page.evaluate(() => window.moveTo(-2000, 0));
-    }
+    console.log(`✅ Chromium opened borderless at ${STREAM_WIDTH}x${STREAM_HEIGHT}`);
+    console.log("🎥 Starting FFmpeg...");
 
-    console.log(`✅ Browser launched in app mode with title "${WINDOW_TITLE}"`);
-    console.log(`🎥 Starting FFmpeg to stream ${STREAM_WIDTH}x${STREAM_HEIGHT} at 30 FPS...`);
-
-    // Spawn FFmpeg to stream
+    // FFmpeg command
     const ffmpegArgs = [
         "-f", "gdigrab",
         "-framerate", "30",
-        "-i", `title=${WINDOW_TITLE}`,      // capture only this window
+        "-i", `title=${WINDOW_TITLE}`,        // will match if no suffix
         "-video_size", `${STREAM_WIDTH}x${STREAM_HEIGHT}`,
         "-c:v", "libx264",
         "-preset", "veryfast",
@@ -71,5 +68,4 @@ const WINDOW_TITLE = "Petition The UK Government";
     ffmpeg.on("error", (err) => {
         console.error(`❌ Failed to start FFmpeg: ${err}`);
     });
-
 })();
