@@ -6,6 +6,7 @@ import { highlightedFeatureId, setHighlightedFeatureId } from "./highlight.store
 import { getFeatureCentroid } from "../lib/getFeatureCentroid";
 
 const POLL_INTERVAL_MS = 60_000;
+const MAP_CENTRE: maplibregl.LngLatLike = [-5.2, 55.3];
 const BASE_COLOR = "rgba(0,0,0,0)";
 const MIN_COLOR = "#644";
 const MID_COLOR = "#ccd";
@@ -88,7 +89,7 @@ export default function PetitionMap() {
     map = new maplibregl.Map({
       container: "map",
       style: { version: 8, sources: {}, layers: [] },
-      center: [-5.2, 55.3],
+      center: MAP_CENTRE,
       zoom: baseZoomLevel,
       attributionControl: false,
     });
@@ -155,7 +156,16 @@ export default function PetitionMap() {
     map.setFilter("highlight-border", ["==", ["get", "id"], id || ""]);
 
     if (id === null) {
-      map.setZoom(baseZoomLevel);
+      // map.setZoom(baseZoomLevel);
+      // map.setCenter(MAP_CENTRE);
+      map.flyTo({
+        essential: true,
+        center: MAP_CENTRE,
+        zoom: baseZoomLevel,
+        screenSpeed: 0.15,
+        maxDuration: 10_000,
+        // curve: 1.2,
+      });
     }
 
     if (!id) return;

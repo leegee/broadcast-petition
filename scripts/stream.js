@@ -1,13 +1,14 @@
 import { spawn } from "child_process";
 import { chromium } from "playwright";
+import { WebSocketServer } from "ws";
 
-const YOUTUBE_STREAM_KEY = "jbz4-htgq-kh0z-63hx-a53c";
+const YOUTUBE_STREAM_KEY = "31bb-bt22-spgb-0bjm-8dd4";
 const VITE_ADDRESS = "http://localhost:3000";
 const STREAM_WIDTH = 1920;
 const STREAM_HEIGHT = 1080 - 100;
 
 (async () => {
-    console.log("🚀 Launching Playwright browser...");
+    console.log("# Launching Playwright browser...");
 
     const browser = await chromium.launch({
         headless: false,
@@ -25,10 +26,10 @@ const STREAM_HEIGHT = 1080 - 100;
     const page = await context.newPage();
     await page.goto(VITE_ADDRESS);
 
-    // Give the browser a moment to render
+    // Give browser a moment to render
     await page.waitForTimeout(500);
 
-    // Detect content bounds (exclude chrome/title bar)
+    // Get content-only bounds (exclude chrome/title bar)
     const bounds = await page.evaluate(() => ({
         x: window.screenX,
         y: window.screenY + (window.outerHeight - window.innerHeight),
@@ -36,32 +37,42 @@ const STREAM_HEIGHT = 1080 - 100;
         height: window.innerHeight
     }));
 
-    console.log("Detected content bounds:", bounds);
+    console.log("# Detected content bounds:", bounds);
 
-    console.log("🎥 Starting FFmpeg...");
+    console.log("# Starting FFmpeg...");
 
-    const ffmpegArgs = [
-        "-f", "gdigrab",                     // capture Windows desktop
-        "-framerate", "30",
-        "-i", "desktop",                     // capture the whole screen
-        "-vf", `crop=${bounds.width}:${bounds.height}:${bounds.x}:${bounds.y}`, // crop to browser
+    const ffmpeg = spawn("ffmpeg", [
+        "-i", "pipe:0",              // read from stdin
         "-c:v", "libx264",
         "-preset", "veryfast",
         "-pix_fmt", "yuv420p",
-        "-b:v", "3000k",
+        "-b:v", "2500k",
         "-c:a", "aac",
         "-ar", "44100",
         "-f", "flv",
         `rtmp://a.rtmp.youtube.com/live2/${YOUTUBE_STREAM_KEY}`
-    ];
+    ]);
 
-    const ffmpeg = spawn("ffmpeg", ffmpegArgs);
-
-    ffmpeg.stdout.on("data", (data) => { });
+    ffmpeg.stdout.on("data", (data) => { });  // silence stdout
     ffmpeg.stderr.on("data", (data) => console.error(data.toString()));
 
-    ffmpeg.on("close", (code) => console.log(`⚠️  FFmpeg exited with code ${code}`));
-    ffmpeg.on("error", (err) => console.error(`❌ Failed to start FFmpeg: ${err}`));
+    ffmpeg.on("close", (code) =>
+        console.log(`##  FFmpeg exited with code ${code}`)
+    );
+    ffmpeg.on("error", (err) =>
+        console.error(`### Failed to start FFmpeg: ${err}`)
+    );
 
-    console.log("✅ Streaming started! Check YouTube Studio for live preview.");
+    const wss = new WebSocketServer({ port: 3001 });
+    console.log("# WSS listening on 3001");
+
+    wss.on("connection", (ws) => {
+        ws.on("message", (chunk) => {
+            console.log("# 📦 Got chunk:", (chunk).length, "bytes");
+            // FFmpeg expects raw bytes
+            ffmpeg.stdin.write(chunk);
+        });
+    });
+
+    console.log("# Streaming started! Check YouTube Studio for live preview.");
 })();
