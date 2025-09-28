@@ -5,9 +5,7 @@ import { fetchPetitionData, countsStore } from "../petitionStore";
 import { highlightedFeatureId, setHighlightedFeatureId } from "./highlight.store";
 import { getFeatureCentroid } from "../lib/getFeatureCentroid";
 
-const POLL_INTERVAL = 60_000;       // fetch petition data
-const HIGHLIGHT_INTERVAL = 3000;    // 3s per highlight
-const HIGHLIGHT_PAUSE = 10_000;     // 10s pause after full cycle
+const POLL_INTERVAL_MS = 60_000;
 const CLRS = ["#4229", "#ccd", "#11f"];
 const INITIAL_ZOOM = 5;
 
@@ -143,7 +141,7 @@ export default function PetitionMap() {
       });
     });
 
-    intervalId = window.setInterval(updateMapData, POLL_INTERVAL);
+    intervalId = window.setInterval(updateMapData, POLL_INTERVAL_MS);
   });
 
   onCleanup(() => {

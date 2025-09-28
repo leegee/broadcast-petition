@@ -1,6 +1,7 @@
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { getSignatureStore } from "./delta.store";
+import { BiggestChange, setBiggestChange } from "./components/BiggestChange";
 export const PETITION_ID = 730194;
 export const GOVERNMENT_RESPONSE_THRESHOLD = 10_000;
 export const DEBATE_THRESHOLD = 100_000;
@@ -34,16 +35,6 @@ export const [countryCountsStore, setCountryCountsStore] = createStore<
 export const [regionCountsStore, setRegionCountsStore] = createStore<
     Record<string, { name: string; count: number }>
 >({});
-
-export interface BiggestChange {
-    code: string;
-    name: string;
-    diff: number;
-    old: number;
-    new: number;
-    timestamp: Date;
-}
-export const [biggestChange, setBiggestChange] = createSignal<BiggestChange | null>(null);
 
 export const [error, setError] = createSignal<string | null>(null);
 
@@ -107,7 +98,7 @@ export async function fetchPetitionData() {
             const diff = newVal - oldVal;
             if (Math.abs(diff) > Math.abs(maxDiff)) {
                 maxDiff = diff;
-                changed = { code, name, diff, old: oldVal, new: newVal, timestamp: new Date() };
+                changed = { id: code, code, name, diff, old: oldVal, new: newVal, timestamp: new Date() };
             }
         }
         if (changed) setBiggestChange(changed);

@@ -12,8 +12,8 @@ export default function TopSignatures(props: TopSignaturesProps) {
 
     const [highlightIndex, setHighlightIndex] = createSignal(0);
 
-    const HIGHLIGHT_INTERVAL = 3000; // 3s per highlight
-    const HIGHLIGHT_PAUSE = 10_000;  // 10s pause after full cycle
+    const HIGHLIGHT_INTERVAL_MS = 10_000;
+    const HIGHLIGHT_PAUSE_MS = 20_000;
 
     const sorted = createMemo(() =>
         Object.entries(countsStore)
@@ -46,7 +46,7 @@ export default function TopSignatures(props: TopSignaturesProps) {
                     timeoutId = window.setTimeout(() => {
                         setHighlightIndex((i) => i + 1);
                         advanceHighlight();
-                    }, HIGHLIGHT_INTERVAL);
+                    }, HIGHLIGHT_INTERVAL_MS);
                 } else {
                     setHighlightedFeatureId(null);
                     // alert("Pausing before restarting highlight tour");
@@ -54,7 +54,7 @@ export default function TopSignatures(props: TopSignaturesProps) {
                     timeoutId = window.setTimeout(() => {
                         setHighlightIndex(0);
                         advanceHighlight();
-                    }, HIGHLIGHT_PAUSE);
+                    }, HIGHLIGHT_PAUSE_MS);
                 }
             };
 
@@ -88,7 +88,7 @@ export default function TopSignatures(props: TopSignaturesProps) {
                         <tbody>
                             <For each={sorted()}>
                                 {(item, itemIndex) => (
-                                    <tr class={itemIndex() === highlightIndex() ? styles.bold : ""}>
+                                    <tr class={itemIndex() === highlightIndex() ? "highlighted" : ""}>
                                         <td>{item.name}</td>
                                         <td class="right-align">{item.count.toLocaleString()}</td>
                                     </tr>

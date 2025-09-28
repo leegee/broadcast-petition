@@ -1,13 +1,17 @@
 import styles from "./BiggestChange.module.scss";
-import { createMemo, Show } from "solid-js";
-import { biggestChange } from "../petitionStore";
+import { createMemo, createSignal, Show } from "solid-js";
+import { highlightedFeatureId } from "./highlight.store";
 
-interface BiggestChange {
+export interface BiggestChange {
+    id: string;
+    code: string;
     name: string;
     diff: number;
+    old: number;
     new: number;
-    timestamp: string | Date;
+    timestamp: Date;
 }
+export const [biggestChange, setBiggestChange] = createSignal<BiggestChange | null>(null);
 
 export default function BiggestChange() {
     const change = createMemo<BiggestChange | null>(() => biggestChange());
@@ -20,7 +24,10 @@ export default function BiggestChange() {
                 const time = new Date(changeAccessor().timestamp).toLocaleTimeString();
 
                 return (
-                    <article class={styles["biggest-change"] + " secondary center-align middle-align margin padding"}>
+                    <article class={`
+                        ${styles["biggest-change"]} secondary center-align middle-align margin padding
+                        ${highlightedFeatureId() === changeAccessor().id ? 'highlighted ' + styles.highlighted : ''}
+                    ` } >
                         <h6>Latest</h6>
                         <p>
                             <span class={styles.name}>
