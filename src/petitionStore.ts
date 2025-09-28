@@ -1,7 +1,6 @@
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
-import { addSignature } from "./delta.store";
-
+import { getSignatureStore } from "./delta.store";
 export const PETITION_ID = 730194;
 export const GOVERNMENT_RESPONSE_THRESHOLD = 10_000;
 export const DEBATE_THRESHOLD = 100_000;
@@ -47,6 +46,8 @@ export interface BiggestChange {
 export const [biggestChange, setBiggestChange] = createSignal<BiggestChange | null>(null);
 
 export const [error, setError] = createSignal<string | null>(null);
+
+const { addSignature } = getSignatureStore();
 
 export async function fetchPetitionData() {
     setError(null);

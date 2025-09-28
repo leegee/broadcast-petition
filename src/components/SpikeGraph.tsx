@@ -1,22 +1,25 @@
 import { For } from "solid-js";
-import { totalSignatureCount } from "../delta.store";
+import { getSignatureStore } from "../delta.store";
+
+const { totalSignatureCount } = getSignatureStore();
 
 export const MAX_ENTRIES = 1000;
+const DEFAULT_SPIKE_HEIGHT = 50;
+const DEFAULT_SPIKE_WIDTH = 4;
 
-// SpikeGraph component reads directly from persisted signal
 export const SpikeGraph = (props: {
     color?: string;
     width?: number;
     height?: number;
     gap?: number;
 }) => {
-    const width = props.width ?? 4;
-    const height = props.height ?? 75;
-    const gap = props.gap ?? 0;
-    const color = props.color ?? "white";
+    const width = props.width ?? DEFAULT_SPIKE_WIDTH;
+    const height = props.height ?? DEFAULT_SPIKE_HEIGHT;
+    const gap = props.gap ?? 0
+    const color = props.color ?? "var(--tertiary)";
 
     const spikes = () => {
-        const values = totalSignatureCount().map(Number);
+        const values = totalSignatureCount() || [];
         if (!values.length) return [];
         const maxValue = Math.max(...values, 1);
         return values.map((v) => (v / maxValue) * height);
@@ -24,11 +27,9 @@ export const SpikeGraph = (props: {
 
     return (
         <article
-            class="border fill no-padding margin"
             style={{
                 display: "flex",
                 "align-items": "flex-end",
-                "justify-content": "space-between",
                 gap: `${gap}px`,
                 height: `${height}px`,
             }}
@@ -39,7 +40,7 @@ export const SpikeGraph = (props: {
                         style={{
                             width: `${width}px`,
                             height: `${spikeHeight}px`,
-                            background: `linear-gradient(to bottom, ${color} 0%, ${color} 1%, rgba(255,255,255,0.1) 50%)`,
+                            background: `linear-gradient(${color} 10%, ${color} 50%, rgba(255,255,255,0.1) 100%)`,
                         }}
                     />
                 )}

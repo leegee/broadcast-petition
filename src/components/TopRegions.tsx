@@ -21,7 +21,7 @@ export default function TopRegions(props: TopRegionsProps) {
             }
         >
             <article class={`border ${styles.tops}`}>
-                <h6>Regions With The Most Signatures</h6>
+                <h6 class="max full-width center-align">Regions With The Most Signatures</h6>
                 <table class={styles.table + " border"}>
                     <thead>
                         <tr>

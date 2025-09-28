@@ -2,43 +2,54 @@ import { createSignal } from "solid-js";
 import { makePersisted } from "@solid-primitives/storage";
 import { PETITION_ID } from "./petitionStore";
 
-const MAX_ENTRIES = 1_000;
+const MAX_ENTRIES = 1000;
 
-// Persisted array of counts
-export const [totalSignatureCount, setTotalSignatureCount] = makePersisted(
-    createSignal<number[]>([]),
-    {
-        name: "petition-totalSignatureCount",
-        storage: localStorage,
-        serialize: JSON.stringify,
-        deserialize: (v) => {
-            const parsed = JSON.parse(v);
-            return Array.isArray(parsed) ? parsed : [];
+let store: ReturnType<typeof createSignatureStoreInternal> | null = null;
+
+function createSignatureStoreInternal() {
+    const [totalSignatureCount, setTotalSignatureCount] = makePersisted(
+        createSignal<number[]>([]),
+        {
+            name: "petition-totalSignatureCount-" + PETITION_ID,
+            storage: localStorage,
+            serialize: JSON.stringify,
+            deserialize: (v) => {
+                const parsed = JSON.parse(v);
+                return Array.isArray(parsed) ? parsed : [];
+            },
         }
+    );
+
+    const [previousTotal, setPreviousTotal] = makePersisted(
+        createSignal<number>(0),
+        {
+            name: "petition-previousTotal-" + PETITION_ID,
+            storage: localStorage,
+            serialize: JSON.stringify,
+            deserialize: (v) => {
+                const parsed = JSON.parse(v);
+                return typeof parsed === "number" ? parsed : 0;
+            },
+        }
+    );
+
+    function addSignature(total: number) {
+        if (previousTotal() === 0) {
+            setPreviousTotal(total);
+            return; // skip first spike
+        }
+        const delta = total - previousTotal();
+        setPreviousTotal(total);
+        setTotalSignatureCount([
+            ...totalSignatureCount().slice(-MAX_ENTRIES + 1),
+            delta,
+        ]);
     }
-);
 
-const [previousTotal, setPreviousTotal] = makePersisted(createSignal<number>(-1), {
-    name: "petition-previousTotal",
-    storage: localStorage,
-    serialize: JSON.stringify,
-    deserialize: (v) => {
-        const parsed = JSON.parse(v);
-        return typeof parsed === "number" ? parsed : 0;
-    }
-});
+    return { totalSignatureCount, setTotalSignatureCount, previousTotal, addSignature };
+}
 
-export function addSignature(total: number) {
-    const delta = total - previousTotal();
-    setPreviousTotal(total);
-
-    console.info('DELTA', delta);
-    console.info('before update', totalSignatureCount());
-
-    setTotalSignatureCount([
-        ...totalSignatureCount().slice(-MAX_ENTRIES + 1),
-        delta
-    ]);
-
-    console.info('after update', totalSignatureCount());
+export function getSignatureStore() {
+    if (!store) store = createSignatureStoreInternal();
+    return store;
 }
