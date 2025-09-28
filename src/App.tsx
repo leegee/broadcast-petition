@@ -1,4 +1,5 @@
 import styles from "./App.module.scss";
+import { createMemo, Show } from "solid-js";
 import BiggestChange from "./components/LatestChange";
 import PetitionMap from "./components/PetitionMap";
 import PetitionMeta from "./components/PetitionMeta";
@@ -8,10 +9,10 @@ import Ticker from "./components/Ticker";
 import TopRegions from "./components/TopRegions";
 import ThresholdProgressBar from "./components/ThresholdProgressBar";
 import { petitionMeta } from "./petitionStore";
-import { createMemo, Show } from "solid-js";
 
 export default function App() {
   const ready = createMemo(() => petitionMeta.action);
+
   return (
     <Show when={ready}>
       <main class={styles.main}>
