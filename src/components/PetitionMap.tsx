@@ -153,7 +153,6 @@ export default function PetitionMap() {
     clearInterval(intervalId);
   });
 
-  // React to highlightedFeatureId changes
   createEffect(() => {
     const id = highlightedFeatureId();
     if (!map) return;
@@ -176,10 +175,11 @@ export default function PetitionMap() {
     map.once("idle", () => {
       requestAnimationFrame(() => {
         map.flyTo({
+          essential: true,
           center: coords,
           zoom: 8.5,
-          screenSpeed: 0.5,
-          maxDuration: 2_000,
+          screenSpeed: 0.15,
+          maxDuration: 10_000,
           // curve: 1.2,
         });
       });
