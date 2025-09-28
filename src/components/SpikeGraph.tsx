@@ -28,10 +28,17 @@ export const SpikeGraph = (props: {
     return (
         <article
             style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                opacity: 0.5,
                 display: "flex",
                 "align-items": "flex-end",
                 gap: `${gap}px`,
                 height: `${height}px`,
+                background: "transparent",
+                margin: "0 1em",
             }}
         >
             <For each={spikes()}>

@@ -9,7 +9,6 @@ import TopRegions from "./components/TopRegions";
 import ThresholdProgressBar from "./components/ThresholdProgressBar";
 import { petitionMeta } from "./petitionStore";
 import { createMemo, Show } from "solid-js";
-import { SpikeGraph } from "./components/SpikeGraph";
 
 export default function App() {
   const ready = createMemo(() => petitionMeta.action);
@@ -27,7 +26,6 @@ export default function App() {
             </div>
             <div style="width: 50%; text-align: center">
               <BiggestChange />
-              <SpikeGraph />
             </div>
           </div>
 

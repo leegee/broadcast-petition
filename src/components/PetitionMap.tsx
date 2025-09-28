@@ -59,12 +59,12 @@ export default function PetitionMap() {
         CLRS[2],
       ]);
 
-      map.setPaintProperty(layer.id, "fill-outline-color", [
-        "case",
-        ["boolean", ["feature-state", "highlighted"], false],
-        "#ffffff",
-        "lime"
-      ]);
+      // map.setPaintProperty(layer.id, "fill-outline-color", [
+      //   "case",
+      //   ["boolean", ["feature-state", "highlighted"], false],
+      //   "#ffffff",
+      //   "lime"
+      // ]);
     }
 
     updateLegend(min, max);
