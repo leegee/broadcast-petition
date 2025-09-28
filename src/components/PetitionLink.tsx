@@ -10,18 +10,17 @@ export default function PetitionLink() {
                 <div class={styles.sign}>
                     <h2>
                         <Flag />
-                        <span>
-                            Sign at{" "}
-                            <a
-                                class=""
-                                href={`https://petition.parliament.uk/petitions/${PETITION_ID}/signatures/new`}
-                            >
-                                {`petition.parliament.uk/petitions/${PETITION_ID}`}
-                            </a>
-                        </span>
+                        <span class={styles.signat}> Sign at </span>
+                        <a
+                            class=""
+                            href={`https://petition.parliament.uk/petitions/${PETITION_ID}/signatures/new`}
+                        >
+                            <span class={styles.domainname}>petition.parliament.uk/petitions/</span>
+                            <span class="bold">{PETITION_ID}</span>
+                        </a>
                     </h2>
                 </div>
-            </Show>
+            </Show >
 
             <Show when={!!petitionMeta.closed_at}>
                 <div class={styles.sign + " border margin padding center-align middle-align"} >

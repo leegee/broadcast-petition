@@ -76,7 +76,7 @@ export default function TopSignatures(props: TopSignaturesProps) {
                 <article class={`max border ${styles.tops}`}>
 
                     <h6 class="max full-width center-align">
-                        Constituencies With The Most Signatures
+                        Most Active Constituencies
                     </h6>
                     <table class={styles.table + " border"}>
                         <thead>

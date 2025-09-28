@@ -22,7 +22,7 @@ export default function TopRegions(props: TopRegionsProps) {
         >
             <div class="row margin ">
                 <article class={`max border ${styles.tops}`}>
-                    <h6 class="center-align">Regions With The Most Signatures</h6>
+                    <h6 class="center-align">Most Active Regions</h6>
                     <table class={styles.table + " border"}>
                         <thead>
                             <tr>
