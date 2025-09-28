@@ -15,11 +15,11 @@
 
 .legend {
     position: absolute;
-    top: 1em;
+    top: 0;
     left: 0;
-    padding: 10pt;
     border-radius: 3pt;
-    font-size: 0.85rem;
+    font-size: 0.85em !important;
+    padding: 0;
 }
 
 .legend div {

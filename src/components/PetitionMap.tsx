@@ -6,7 +6,11 @@ import { highlightedFeatureId, setHighlightedFeatureId } from "./highlight.store
 import { getFeatureCentroid } from "../lib/getFeatureCentroid";
 
 const POLL_INTERVAL_MS = 60_000;
-const CLRS = ["#4229", "#ccd", "#11f"];
+const BASE_COLOR = "rgba(0,0,0,0)";
+const MIN_COLOR = "#644";
+const MID_COLOR = "#ccd";
+const MAX_COLOR = "#11f";
+const CLRS = [MIN_COLOR, MID_COLOR, MAX_COLOR];
 const INITIAL_ZOOM = 5;
 
 export default function PetitionMap() {
@@ -24,9 +28,9 @@ export default function PetitionMap() {
   }
 
   function updateLegend(min: number, max: number) {
-    const steps = [min, Math.round((min + max) / 2), max].map((value, i) => ({
+    const steps = [0, min, Math.round((min + max) / 2), max].map((value, i) => ({
       value,
-      color: CLRS[i],
+      color: [BASE_COLOR, MIN_COLOR, MID_COLOR, MAX_COLOR][i],
     }));
     setLegendSteps(steps);
   }
@@ -50,6 +54,7 @@ export default function PetitionMap() {
         "interpolate",
         ["linear"],
         ["get", "signatures"],
+        0, BASE_COLOR,
         min, CLRS[0],
         (min + max) / 2, CLRS[1],
         max, CLRS[2],
@@ -184,19 +189,22 @@ export default function PetitionMap() {
 
   return (
     <div class={styles["map-container"]}>
+
       <div id="map" class={styles.map} />
 
-      <article class={"transparent " + styles.legend}>
-        {legendSteps().map((step) => (
-          <div>
-            <div
-              class={styles["legend-color"]}
-              style={{ "background-color": step.color }}
-            />
-            <span>{step.value.toLocaleString()}</span>
-          </div>
-        ))}
+      <article class={"margin " + styles.legend}>
+        <ul class="list no-space">
+          {legendSteps().map((step) => (
+            <li>
+              <button class={'chip border ' + styles["legend-color"]}
+                style={{ "background-color": step.color }}
+              />
+              <div class="max"></div>
+              <label>{step.value.toLocaleString()}</label>
+            </li>
+          ))}
+        </ul>
       </article>
-    </div>
+    </div >
   );
 }
