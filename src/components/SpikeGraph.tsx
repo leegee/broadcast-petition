@@ -1,11 +1,12 @@
-import { For } from "solid-js";
+import styles from './SpikeGraph.module.scss';
+import { createMemo, For } from "solid-js";
 import { getSignatureStore } from "../delta.store";
 
 const { totalSignatureCount } = getSignatureStore();
 
 export const MAX_ENTRIES = 1000;
-const DEFAULT_SPIKE_HEIGHT = 50;
-const DEFAULT_SPIKE_WIDTH = 4;
+const DEFAULT_SPIKE_HEIGHT = 60;
+const DEFAULT_SPIKE_WIDTH = 6;
 
 export const SpikeGraph = (props: {
     color?: string;
@@ -13,41 +14,28 @@ export const SpikeGraph = (props: {
     height?: number;
     gap?: number;
 }) => {
-    const width = props.width ?? DEFAULT_SPIKE_WIDTH;
     const height = props.height ?? DEFAULT_SPIKE_HEIGHT;
-    const gap = props.gap ?? 0
     const color = props.color ?? "var(--tertiary)";
+    // const width = ; // props.width ?? DEFAULT_SPIKE_WIDTH;
 
-    const spikes = () => {
+    const spikes = createMemo(() => {
         const values = totalSignatureCount() || [];
         if (!values.length) return [];
         const maxValue = Math.max(...values, 1);
         return values.map((v) => (v / maxValue) * height);
-    };
+    });
 
     return (
-        <article
-            style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                opacity: 0.5,
-                display: "flex",
-                "align-items": "flex-end",
-                gap: `${gap}px`,
-                height: `${height}px`,
-                background: "transparent",
-                margin: "0 1em",
-            }}
+        <article class={styles.container}
+            style={{ height: `${height}px`, }}
         >
             <For each={spikes()}>
                 {(spikeHeight) => (
-                    <div
+                    <div class={styles.spike}
                         style={{
-                            width: `${width}px`,
+                            width: `${Math.min(Math.max(100 / spikes().length, 1), 100)}%`,
                             height: `${spikeHeight}px`,
-                            background: `linear-gradient(${color} 10%, ${color} 50%, rgba(255,255,255,0.1) 100%)`,
+                            background: `linear-gradient(white 0, ${color} 30%, rgba(255,255,255,0.5) 100%)`,
                         }}
                     />
                 )}
