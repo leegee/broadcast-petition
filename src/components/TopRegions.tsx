@@ -26,7 +26,7 @@ export default function TopRegions(props: TopRegionsProps) {
                     <thead>
                         <tr>
                             <th>Region</th>
-                            <th>Signatures</th>
+                            <th class="right-align">Signatures</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,7 +34,7 @@ export default function TopRegions(props: TopRegionsProps) {
                             {(item) => (
                                 <tr>
                                     <td>{item.name}</td>
-                                    <td>{item.count.toLocaleString()}</td>
+                                    <td class="right-align">{item.count.toLocaleString()}</td>
                                 </tr>
                             )}
                         </For>

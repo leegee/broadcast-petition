@@ -1,6 +1,7 @@
 import styles from "./TopSignatures.module.scss";
-import { createMemo, For, Show } from "solid-js";
+import { createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import { countsStore, error, petitionMeta } from "../petitionStore";
+import { setHighlightedFeatureId } from "./highlight.store";
 
 interface TopSignaturesProps {
     n?: number;
@@ -8,6 +9,21 @@ interface TopSignaturesProps {
 
 export default function TopSignatures(props: TopSignaturesProps) {
     const topN = props.n ?? 5;
+
+    const [highlightIndex, setHighlightIndex] = createSignal(0);
+
+    onMount(() => {
+        const interval = setInterval(() => {
+            setHighlightIndex((c) => (c + 1) % (topN + 1));
+
+            const sortedList = sorted();
+            const feature = sortedList[highlightIndex()];
+            setHighlightedFeatureId(feature?.code ?? null);
+
+        }, 10_000);
+
+        onCleanup(() => clearInterval(interval));
+    });
 
     const sorted = createMemo(() => Object.entries(countsStore)
         .map(([code, { name, count }]) => ({ code, name, count }))
@@ -27,21 +43,21 @@ export default function TopSignatures(props: TopSignaturesProps) {
                     <thead>
                         <tr>
                             <th>Constituency</th>
-                            <th>Signatures</th>
+                            <th class="right-align">Signatures</th>
                         </tr>
                     </thead>
                     <tbody>
                         <For each={sorted()}>
-                            {(item) => (
-                                <tr>
+                            {(item, itemIndex) => (
+                                <tr class={itemIndex() === highlightIndex() ? styles.bold : ''}>
                                     <td>{item.name}</td>
-                                    <td>{item.count.toLocaleString()}</td>
+                                    <td class="right-align">{item.count.toLocaleString()}</td>
                                 </tr>
                             )}
                         </For>
                     </tbody>
                 </table>
             </article>
-        </Show>
+        </Show >
     );
 }
