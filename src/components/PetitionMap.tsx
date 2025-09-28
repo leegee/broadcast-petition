@@ -1,18 +1,17 @@
 import styles from "./PetitionMap.module.scss";
-import { onMount, onCleanup, createSignal } from "solid-js";
+import { onMount, onCleanup, createSignal, createEffect } from "solid-js";
 import maplibregl from "maplibre-gl";
 import { fetchPetitionData, countsStore } from "../petitionStore";
+import { highlightedFeatureId } from "./highlight.store";
+import { getFeatureCentroid } from "../lib/getFeatureCentroid";
 
 const POLL_INTERVAL = 60_000;
-const HIGHLIGHT_INTERVAL = 3000; // 3s per region
 const CLRS = ["#4229", "#ccd", "#11f"];
-// const CLRS = ["#D70040", "orange", "yellow"];
 
 export default function PetitionMap() {
   let map: maplibregl.Map;
   let popup: maplibregl.Popup;
   let intervalId: number;
-  let highlightId: number;
   let geoData: any;
 
   const [legendSteps, setLegendSteps] = createSignal<
@@ -51,56 +50,13 @@ export default function PetitionMap() {
         "interpolate",
         ["linear"],
         ["get", "signatures"],
-        min,
-        CLRS[0],
-        (min + max) / 2,
-        CLRS[1],
-        max,
-        CLRS[2],
+        min, CLRS[0],
+        (min + max) / 2, CLRS[1],
+        max, CLRS[2],
       ]);
-
-      // map.setPaintProperty(layer.id, "fill-outline-color", [
-      //   "case",
-      //   ["boolean", ["feature-state", "highlighted"], false],
-      //   "#ffffff",
-      //   "lime"
-      // ]);
     }
 
     updateLegend(min, max);
-  }
-
-  function startHighlightTour() {
-    const codes = Object.keys(countsStore);
-    let idx = 0;
-    let prev: string | null = null;
-
-    highlightId = window.setInterval(() => {
-      if (!codes.length) return;
-
-      const code = codes[idx % codes.length];
-
-      if (prev) {
-        // clear previous highlight
-        map.setFeatureState(
-          { source: "constituencies", id: prev },
-          { highlighted: false }
-        );
-      }
-
-      // set new highlight
-      map.setFeatureState(
-        { source: "constituencies", id: code },
-        { highlighted: true }
-      );
-
-      // setHilitConstituencyCode(code);
-
-      prev = code;
-      if (++idx > 100000) {
-        idx = 0;
-      }
-    }, HIGHLIGHT_INTERVAL);
   }
 
   onMount(async () => {
@@ -110,10 +66,12 @@ export default function PetitionMap() {
 
     await fetchPetitionData();
 
+    // Add an id property for filtering
     geoData.features.forEach((f: any) => {
       const code = f.properties.PCON24CD.toUpperCase();
       f.properties.signatures = countsStore[code]?.count || 0;
-      f.id = code; // ensure each feature has a unique id for setFeatureState
+      f.properties.id = code; // for highlight layer filter
+      f.id = code;           // for setFeatureState or other uses
     });
 
     const { min, max } = getSignatureRange();
@@ -131,6 +89,7 @@ export default function PetitionMap() {
     map.on("load", () => {
       map.addSource("constituencies", { type: "geojson", data: geoData });
 
+      // Main heatmap/fill layer
       map.addLayer({
         id: "constituency-fills",
         type: "fill",
@@ -140,58 +99,27 @@ export default function PetitionMap() {
             "interpolate",
             ["linear"],
             ["get", "signatures"],
-            min,
-            CLRS[0],
-            (min + max) / 2,
-            CLRS[1],
-            max,
-            CLRS[2],
+            min, CLRS[0],
+            (min + max) / 2, CLRS[1],
+            max, CLRS[2],
           ],
           "fill-opacity": 0.9,
         },
       });
 
-      // add an outline layer that reacts to feature-state
+      // Overlay layer for highlight
       map.addLayer({
-        id: "constituency-outline",
+        id: "highlight-border",
         type: "line",
         source: "constituencies",
         paint: {
-          "line-color": [
-            "case",
-            ["boolean", ["feature-state", "highlighted"], false],
-            "white",
-            "transparent",
-          ],
-          "line-width": [
-            "case",
-            ["boolean", ["feature-state", "highlighted"], false],
-            3,
-            0,
-          ],
+          "line-color": "white",
+          "line-width": 5,
         },
+        filter: ["==", ["get", "id"], ""], // initially no feature
       });
 
       updateLegend(min, max);
-      startHighlightTour();
-
-      map.on("mousemove", "constituency-fills", (e) => {
-        map.getCanvas().style.cursor = "pointer";
-        if (e.features?.length) {
-          const f = e.features[0];
-          popup
-            .setLngLat(e.lngLat)
-            .setHTML(
-              `<strong>${f.properties.PCON24NM}</strong><br/>${f.properties.signatures.toLocaleString()} signatures`
-            )
-            .addTo(map);
-        }
-      });
-
-      map.on("mouseleave", "constituency-fills", () => {
-        map.getCanvas().style.cursor = "";
-        popup.remove();
-      });
     });
 
     intervalId = window.setInterval(updateMapData, POLL_INTERVAL);
@@ -200,7 +128,29 @@ export default function PetitionMap() {
   onCleanup(() => {
     map?.remove();
     clearInterval(intervalId);
-    clearInterval(highlightId);
+  });
+
+  // React to external highlightedFeatureId()
+  createEffect(() => {
+    const id = highlightedFeatureId();
+
+    if (id && map) {
+      // Update highlight style
+      map.setFilter("highlight-fill", ["==", ["get", "id"], id]);
+      map.setFilter("highlight-border", ["==", ["get", "id"], id]);
+
+      const coords = getFeatureCentroid(map, "constituency-fills", id);
+      if (coords) {
+        map.once("render", () => {
+          map.flyTo({
+            center: coords,
+            zoom: 9,
+            duration: 5000,
+            curve: 1.2,
+          });
+        });
+      }
+    }
   });
 
   return (
