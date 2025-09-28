@@ -49,7 +49,7 @@ export default function TopSignatures(props: TopSignaturesProps) {
                     }, HIGHLIGHT_INTERVAL);
                 } else {
                     setHighlightedFeatureId(null);
-                    alert("Pausing before restarting highlight tour");
+                    // alert("Pausing before restarting highlight tour");
 
                     timeoutId = window.setTimeout(() => {
                         setHighlightIndex(0);
