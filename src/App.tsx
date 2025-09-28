@@ -29,25 +29,24 @@ export default function App() {
             </div>
           </div>
 
-          <div style="width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: flex-start;">
-            <div style="width: 50%; display: flex;    justify-content: center; flex-direction: column; align-items: center;">
-              <TopSignatures />
+          <div style="display: flex; width: 100%; background-color: rgb(9, 9, 194); ">
+            <div>
+              <PetitionLink />
             </div>
+            <div style="width: 60%">
+              <Ticker />
+            </div>
+          </div>
+
+          <div style="width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: flex-start;">
             <div style="width: 50%; display: flex;    justify-content: center; flex-direction: column; align-items: center;">
               <TopRegions />
             </div>
+            <div style="width: 50%; display: flex;    justify-content: center; flex-direction: column; align-items: center;">
+              <TopSignatures />
+            </div>
           </div>
         </div >
-
-
-        <nav style="display: flex; width: 100%; background-color: rgb(9, 9, 194); ">
-          <div>
-            <PetitionLink />
-          </div>
-          <div style="width: 60%">
-            <Ticker />
-          </div>
-        </nav>
 
         <PetitionMap />
 

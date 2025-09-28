@@ -9,6 +9,7 @@ const POLL_INTERVAL = 60_000;       // fetch petition data
 const HIGHLIGHT_INTERVAL = 3000;    // 3s per highlight
 const HIGHLIGHT_PAUSE = 10_000;     // 10s pause after full cycle
 const CLRS = ["#4229", "#ccd", "#11f"];
+const INITIAL_ZOOM = 5;
 
 export default function PetitionMap() {
   let map: maplibregl.Map;
@@ -19,9 +20,6 @@ export default function PetitionMap() {
 
   const [legendSteps, setLegendSteps] = createSignal<{ value: number; color: string }[]>([]);
 
-  // -------------------------
-  // Helpers
-  // -------------------------
   function getSignatureRange() {
     const values = Object.values(countsStore).map(c => c.count);
     return { min: Math.min(...values), max: Math.max(...values) };
@@ -63,37 +61,6 @@ export default function PetitionMap() {
     updateLegend(min, max);
   }
 
-  // -------------------------
-  // Highlight tour
-  // -------------------------
-  function startHighlightTour() {
-    const codes = Object.keys(countsStore);
-    let idx = 0;
-
-    function highlightNext() {
-      if (!codes.length) return;
-
-      const code = codes[idx];
-      setHighlightedFeatureId(code);
-
-      idx++;
-      if (idx < codes.length) {
-        highlightTimeout = window.setTimeout(highlightNext, HIGHLIGHT_INTERVAL);
-      } else {
-        // pause 10s after full cycle
-        highlightTimeout = window.setTimeout(() => {
-          idx = 0;
-          highlightNext();
-        }, HIGHLIGHT_PAUSE);
-      }
-    }
-
-    highlightNext();
-  }
-
-  // -------------------------
-  // Mount
-  // -------------------------
   onMount(async () => {
     geoData = await fetch(
       "Westminster_Parliamentary_Constituencies_July_2024_Boundaries_UK_BGC_-8097874740651686118.geojson"
@@ -114,7 +81,7 @@ export default function PetitionMap() {
       container: "map",
       style: { version: 8, sources: {}, layers: [] },
       center: [-5.2, 55.3],
-      zoom: 5,
+      zoom: INITIAL_ZOOM,
       attributionControl: false,
     });
 
@@ -174,9 +141,6 @@ export default function PetitionMap() {
         map.getCanvas().style.cursor = "";
         popup.remove();
       });
-
-      // Start highlight tour
-      startHighlightTour();
     });
 
     intervalId = window.setInterval(updateMapData, POLL_INTERVAL);
@@ -185,18 +149,19 @@ export default function PetitionMap() {
   onCleanup(() => {
     map?.remove();
     clearInterval(intervalId);
-    clearTimeout(highlightTimeout);
   });
 
-  // -------------------------
   // React to highlightedFeatureId changes
-  // -------------------------
   createEffect(() => {
     const id = highlightedFeatureId();
     if (!map) return;
 
     // Update highlight border
     map.setFilter("highlight-border", ["==", ["get", "id"], id || ""]);
+
+    if (id === null) {
+      map.setZoom(INITIAL_ZOOM);
+    }
 
     if (!id) return;
 
@@ -214,9 +179,6 @@ export default function PetitionMap() {
     });
   });
 
-  // -------------------------
-  // Render
-  // -------------------------
   return (
     <div class={styles["map-container"]}>
       <div id="map" class={styles.map} />

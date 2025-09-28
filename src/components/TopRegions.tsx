@@ -20,27 +20,29 @@ export default function TopRegions(props: TopRegionsProps) {
                 <Show when={error()}> <div class="error" /> </Show>
             }
         >
-            <article class={`border ${styles.tops}`}>
-                <h6 class="max full-width center-align">Regions With The Most Signatures</h6>
-                <table class={styles.table + " border"}>
-                    <thead>
-                        <tr>
-                            <th>Region</th>
-                            <th class="right-align">Signatures</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <For each={sorted()}>
-                            {(item) => (
-                                <tr>
-                                    <td>{item.name}</td>
-                                    <td class="right-align">{item.count.toLocaleString()}</td>
-                                </tr>
-                            )}
-                        </For>
-                    </tbody>
-                </table>
-            </article>
+            <div class="row margin ">
+                <article class={`max border ${styles.tops}`}>
+                    <h6 class="center-align">Regions With The Most Signatures</h6>
+                    <table class={styles.table + " border"}>
+                        <thead>
+                            <tr>
+                                <th>Region</th>
+                                <th class="right-align">Signatures</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <For each={sorted()}>
+                                {(item) => (
+                                    <tr>
+                                        <td>{item.name}</td>
+                                        <td class="right-align">{item.count.toLocaleString()}</td>
+                                    </tr>
+                                )}
+                            </For>
+                        </tbody>
+                    </table>
+                </article>
+            </div>
         </Show>
     );
 }
