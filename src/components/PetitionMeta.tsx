@@ -11,8 +11,6 @@ export default function PetitionMeta() {
             }
         >
             <>
-                {/* <article class={styles.meta + " transparent card border margin"}> */}
-
                 <article>
                     <h1 class={'small padding center-align stroked-black ' + styles.title}>{petitionMeta.action}</h1>
                     {/* <hr /> */}
@@ -25,18 +23,20 @@ export default function PetitionMeta() {
                 </article>
 
                 <article class="border margin">
-                    <blockquote class="margin">
+                    <blockquote class="margin" style="columns: 2; text-align: justify; padding-bottom:0; padding-top:0">
                         <strong>{petitionMeta.background}</strong>
                         {petitionMeta.additional_details && <span>{' ' + petitionMeta.additional_details}</span>}
                     </blockquote>
                     <p class="right-align margin">
-                        &mdash;&nbsp;<span class={`italic ${styles.creator_name}`}>
-                            {petitionMeta.creator_name},
-                        </span>
-                        <span>
-                            {new Date(petitionMeta.created_at!).toLocaleDateString()} {" at "}
-                            {new Date(petitionMeta.created_at!).toLocaleTimeString()}
-                        </span>
+                        <cite style='padding-right: 1.6em;'>
+                            &mdash;&nbsp;<span class={`italic ${styles.creator_name}`}>
+                                {petitionMeta.creator_name},
+                            </span>
+                            <span>
+                                {new Date(petitionMeta.created_at!).toLocaleDateString()} {" at "}
+                                {new Date(petitionMeta.created_at!).toLocaleTimeString()}
+                            </span>
+                        </cite>
                     </p>
                 </article>
             </>
