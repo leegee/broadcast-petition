@@ -31,12 +31,8 @@ export default function App() {
           </div>
 
           <div style="display: flex; width: 100%; background-color: rgb(9, 9, 194); ">
-            <div>
-              <PetitionLink />
-            </div>
-            <div style="width: 60%">
-              <Ticker />
-            </div>
+            <PetitionLink />
+            <Ticker />
           </div>
 
           <div style="width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: flex-start;">

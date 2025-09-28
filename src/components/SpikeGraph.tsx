@@ -26,7 +26,7 @@ export const SpikeGraph = (props: {
     });
 
     return (
-        <article class={styles.container}
+        <article class={styles["graph-container"]}
             style={{ height: `${height}px`, }}
         >
             <For each={spikes()}>
