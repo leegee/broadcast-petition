@@ -15,11 +15,7 @@ export default function TopRegions(props: TopRegionsProps) {
     );
 
     return (
-        <Show when={!error() && petitionMeta.action}
-            fallback={
-                <Show when={error()}> <div class="error" /> </Show>
-            }
-        >
+        <Show when={!error() && petitionMeta.action} fallback={<div class="error" />}>
             <div class="row margin ">
                 <article class={`max border ${styles.tops}`}>
                     <h6 class="center-align">Most Active Regions</h6>
