@@ -1,7 +1,8 @@
 .container {
-    padding-top: 0 !important;
-    padding-left: 0 !important;
-    display: inline-block;
+    // padding-top: 0 !important;
+    // padding-left: 0 !important;
+    display: flex;
+    flex-direction: column;
 
     .name {
         font-weight: bold;

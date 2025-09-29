@@ -22,7 +22,6 @@ export default function App() {
 
           <PetitionMeta />
 
-
           <Show when={petitionMeta.government_response?.summary}>
             <article>
               <strong>{petitionMeta.government_response?.summary}</strong>
@@ -31,7 +30,7 @@ export default function App() {
           </Show>
 
           <Show when={!petitionMeta.government_response?.summary}>
-            <div style="margin-top:0;  gap: 0; width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: center;">
+            <div style="margin-top:0;  gap: 0; width: 100%; display: flex; flex-direction:row; justify-content: space-evenly; align-items: center;">
               <div style="width: 25%; height: 100%; padding: 1em; text-align: center; display: flex; flex-direction:column; gap: 0.8em; align-items: center; justify-content: space-around">
                 <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
                 <ThresholdProgressBar type="DEBATE" />
@@ -44,7 +43,7 @@ export default function App() {
                 </div>
                 <SpikeGraph />
               </div>
-              <div style="width: 50%; text-align: center">
+              <div style="width: 50%;  display: flex; ">
                 <LatestChange />
               </div>
             </div>
