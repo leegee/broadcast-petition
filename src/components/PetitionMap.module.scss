@@ -12,6 +12,7 @@
     width: 100%;
 }
 
+.zoomedout,
 .legend {
     position: absolute;
     top: 0;
@@ -24,6 +25,17 @@
     li {
         padding: 0.3em 0 !important;
         margin: 0;
+    }
+}
+
+.zoomedout {
+    top: 75vh;
+    width: 25em;
+    opacity: 0.8;
+
+    h6 {
+        font-size: 14pt;
+        margin-bottom: 0.3em;
     }
 }
 
@@ -51,7 +63,7 @@
     background-color: hsla(240, 90%, 50%, 50%);
     box-shadow: 0pt 2pt 4pt rgb(0, 0, 69);
     color: #fffd;
-    border: 1pt solid oldlace;
+    border: 2pt solid oldlace;
     border-radius: 4pt;
     max-width: 20vw;
     width: auto;

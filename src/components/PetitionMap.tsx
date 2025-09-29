@@ -27,6 +27,7 @@ export default function PetitionMap() {
   const [legendSteps, setLegendSteps] = createSignal<{ value: number; color: string }[]>([]);
   const [popupTitle, setPopupTitle] = createSignal<string | null>(null);
   const [popupXY, setPopupXY] = createSignal<maplibregl.Point | null>(null);
+  const [zoom, setZoom] = createSignal(baseZoomLevel);
 
   function getSignatureRange() {
     const values = Object.values(countsStore).map(c => c.count);
@@ -107,6 +108,12 @@ export default function PetitionMap() {
     });
 
     map.on("load", () => {
+      // Note zoom levels
+      const handler = () => {
+        setZoom(Math.floor(map.getZoom()))
+      };
+      map.on("zoom", handler);
+      onCleanup(() => map.off("zoom", handler));
 
       // Add GeoJSON source
       map.addSource("constituencies", { type: "geojson", data: geoData });
@@ -141,7 +148,7 @@ export default function PetitionMap() {
       updateLegend(min, max);
 
       map.fitBounds(UK_BOUNDS, { padding: 40, animate: false });
-      baseZoomLevel = map.getZoom();
+      baseZoomLevel = Math.floor(map.getZoom());
       map.setMinZoom(baseZoomLevel);
 
       //   new maplibregl.Popup({ closeOnClick: false, anchor: "bottom" })
@@ -158,7 +165,6 @@ export default function PetitionMap() {
     clearInterval(intervalId);
   });
 
-
   createEffect(() => {
     const id = highlightedFeatureId();
     if (!map || !map.isStyleLoaded() || !map.getLayer("highlight-border")) return;
@@ -166,6 +172,7 @@ export default function PetitionMap() {
     // Clear highlight if no ID
     if (!id) {
       map.setFilter("highlight-border", ["==", ["get", "id"], ""]);
+      setPopupTitle('');
       map.flyTo({ center: MAP_CENTRE, zoom: baseZoomLevel, essential: true });
       setPopupTitle(null);
       return;
@@ -181,6 +188,7 @@ export default function PetitionMap() {
     setPopupTitle(null);
 
     map.once('idle', () => {
+      setPopupTitle('');
       map.flyTo({
         center: coords,
         zoom: 8.5,
@@ -207,7 +215,7 @@ export default function PetitionMap() {
         <div class={styles.popup} style={`top:${popupXY()!.y}px; left:${popupXY()!.x}px`}>{popupTitle()}</div>
       </Show>
 
-      <article class={" " + styles.legend}>
+      <article class={styles.legend}>
         <ul class="list no-space">
           {legendSteps().map((step) => (
             <li>
@@ -221,6 +229,17 @@ export default function PetitionMap() {
           ))}
         </ul>
       </article>
+
+      <Show when={popupTitle() === null && zoom() === baseZoomLevel}>
+        <article class={styles.zoomedout + ' small padding'}>
+          <h6>About This Information</h6>
+          <div>
+            The data visaulised here is fetched every minute
+            from Parliament's public API, and is republished here
+            within the terms of the data's lisence.
+          </div>
+        </article>
+      </Show>
     </div>
   );
 }
