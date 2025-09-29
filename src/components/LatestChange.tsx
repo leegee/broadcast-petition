@@ -25,7 +25,7 @@ export default function BiggestChange() {
 
                 return (
                     <article class={`
-                        ${styles.container} secondary center-align middle-align padding
+                        ${styles.container} fill center-align middle-align padding medium-elevate
                         ${highlightedFeatureId() === changeAccessor().id ? 'highlighted ' + styles.highlighted : ''}
                     ` } >
                         <h6>Latest</h6>
