@@ -12,20 +12,21 @@
     border-radius: 2em;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    padding: 0 0.6em !important;
+    padding: 1px !important;
     box-shadow: 2pt 2pt 4pt rgb(0, 0, 69);
 
     h2 {
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 24pt !important;
         opacity: 0.9;
         font-size: 14pt !important;
-        line-height: 28pt;
+        line-height: 32pt;
+        padding-right: 0.6em;
+        padding-left: 2pt;
 
-        span {
-            margin-left: 0.1em;
+        .flag {
+            margin-right: 0.3em;
         }
 
         .signat {
@@ -33,9 +34,21 @@
             font-variant: small-caps;
         }
 
+        .a {
+            position: relative;
+            top: -1pt;
+        }
+
         .domainname {
             opacity: 0.8;
             font-weight: 100;
+        }
+
+        .petition_id {
+            font-variant: small-caps;
+            font-size: 90%;
+            position: relative;
+            top: 1pt;
         }
     }
 }

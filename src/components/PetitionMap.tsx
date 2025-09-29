@@ -143,7 +143,7 @@ export default function PetitionMap() {
 
   createEffect(() => {
     const id = highlightedFeatureId();
-    if (!map || !map.isStyleLoaded() || !map.getLayer("highlight-border")) return;
+    if (!map || !map.isStyleLoaded()) return;
 
     // Remove existing popup
     if (popup) {
@@ -163,20 +163,27 @@ export default function PetitionMap() {
     const coords = getFeatureCentroid(map, "constituency-fills", id);
     if (!coords || !Array.isArray(coords) || coords.length !== 2) return;
 
-    // Create popup at feature centroid
-    popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false })
-      .setLngLat(coords)
-      .setHTML(`<strong>${geoData.features.find((f: any) => f.id === id)?.properties.PCON24NM}</strong>`)
-      .addTo(map);
-
-    // Fly to feature
+    // Fly to feature first
     map.flyTo({
       center: coords,
       zoom: 8.5,
       essential: true,
-      screenSpeed: 0.15,
-      maxDuration: 10_000,
+      screenSpeed: 0.25,
+      curve: 1.2,
+      maxDuration: 5_000,
     });
+
+    // Add popup **after flyTo completes** (idle event)
+    const onIdle = () => {
+      popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false })
+        .setLngLat(coords)
+        .setHTML(`<strong>${geoData.features.find((f: any) => f.id === id)?.properties.PCON24NM}</strong>`)
+        .addTo(map);
+
+      map.off("idle", onIdle); // remove listener after firing
+    };
+
+    map.on("idle", onIdle);
   });
 
   return (

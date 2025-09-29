@@ -70,7 +70,7 @@ export default function TopSignatures(props: TopSignaturesProps) {
     return (
         <Show
             when={!error() && petitionMeta.action}
-            fallback={<div class="loading">Error loading petition info: {error()}</div>}
+            fallback={<div class="loading" />}
         >
             <div class="row margin ">
                 <article class={`max border ${styles.tops}`}>
