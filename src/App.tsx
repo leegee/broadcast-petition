@@ -41,7 +41,7 @@ export default function App() {
                   <SignatureMovingAverage />
                   <SignatureMovingAverage mode="day" />
                 </div>
-                <SpikeGraph />
+                {/* <SpikeGraph /> */}
               </div>
               <div style="width: 50%;  display: flex; ">
                 <LatestChange />
