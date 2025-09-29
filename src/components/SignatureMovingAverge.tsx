@@ -40,13 +40,13 @@ export const SignatureMovingAverage: Component<SignatureMovingAverageProps> = (p
     const label = props.mode === "minute"
         ? "Past minute"
         : props.mode === "day"
-            ? "Hourly Avg/24h"
+            ? "1h/day"
             : "Past hour";
 
     return (
         <button class="chip large border fill tiny-margin medium-elevate">
             <span>
-                {label}: {Math.floor(value()).toLocaleString()} signatures
+                {label}: {Math.floor(value()).toLocaleString()}
             </span>
         </button>
     );

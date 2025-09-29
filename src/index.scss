@@ -25,3 +25,12 @@ body.dark .stroked-black {
 body.light .stroked-black {
     text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
 }
+
+.maplibregl-popup {
+    z-index: 9999 !important;
+}
+
+#map {
+    position: relative !important;
+    overflow: visible !important;
+}

@@ -1,5 +1,5 @@
 import styles from "./PetitionMap.module.scss";
-import { onMount, onCleanup, createSignal, createEffect } from "solid-js";
+import { onMount, onCleanup, createSignal, createEffect, Show } from "solid-js";
 import maplibregl from "maplibre-gl";
 import { fetchPetitionData, countsStore } from "../petitionStore";
 import { highlightedFeatureId } from "./highlight.store";
@@ -8,7 +8,7 @@ import { getFeatureCentroid } from "../lib/getFeatureCentroid";
 const POLL_INTERVAL_MS = 60_000;
 const MAP_CENTRE: maplibregl.LngLatLike = [-5.2, 55.3];
 const BASE_COLOR = "rgba(0,0,0,0)";
-const MIN_COLOR = "#644";
+const MIN_COLOR = "#555"; "#644";
 const MID_COLOR = "#ccd";
 const MAX_COLOR = "#11f";
 const CLRS = [MIN_COLOR, MID_COLOR, MAX_COLOR];
@@ -21,11 +21,11 @@ const UK_BOUNDS: [number, number, number, number] = [
 
 export default function PetitionMap() {
   let map: maplibregl.Map;
-  let popup: maplibregl.Popup | null = null;
   let intervalId: number;
   let geoData: any;
 
   const [legendSteps, setLegendSteps] = createSignal<{ value: number; color: string }[]>([]);
+  const [popupTitle, setPopupTitle] = createSignal<string | null>(null);
 
   function getSignatureRange() {
     const values = Object.values(countsStore).map(c => c.count);
@@ -89,13 +89,24 @@ export default function PetitionMap() {
     // Create map
     map = new maplibregl.Map({
       container: "map",
-      style: { version: 8, sources: {}, layers: [], glyphs: "fonts/{fontstack}/{range}.pbf" },
+      style: {
+        version: 8,
+        sources: {},
+        layers: [
+          {
+            id: "background",
+            type: "background",
+            paint: { "background-color": "transparent" },
+          },
+        ],
+      },
       center: MAP_CENTRE,
       zoom: baseZoomLevel,
       attributionControl: false,
     });
 
     map.on("load", () => {
+
       // Add GeoJSON source
       map.addSource("constituencies", { type: "geojson", data: geoData });
 
@@ -131,6 +142,11 @@ export default function PetitionMap() {
       map.fitBounds(UK_BOUNDS, { padding: 40, animate: false });
       baseZoomLevel = map.getZoom();
       map.setMinZoom(baseZoomLevel);
+
+      //   new maplibregl.Popup({ closeOnClick: false, anchor: "bottom" })
+      //     .setLngLat([-1, 54])
+      //     .setHTML('<button class="chip primary">Hello World!</button>')
+      //     .addTo(map);
     });
 
     intervalId = window.setInterval(updateMapData, POLL_INTERVAL_MS);
@@ -141,19 +157,16 @@ export default function PetitionMap() {
     clearInterval(intervalId);
   });
 
+
   createEffect(() => {
     const id = highlightedFeatureId();
     if (!map || !map.isStyleLoaded() || !map.getLayer("highlight-border")) return;
 
-    // Remove existing popup
-    if (popup) {
-      popup.remove();
-      popup = null;
-    }
-
+    // Clear highlight if no ID
     if (!id) {
       map.setFilter("highlight-border", ["==", ["get", "id"], ""]);
       map.flyTo({ center: MAP_CENTRE, zoom: baseZoomLevel, essential: true });
+      setPopupTitle(null);
       return;
     }
 
@@ -163,32 +176,34 @@ export default function PetitionMap() {
     const coords = getFeatureCentroid(map, "constituency-fills", id);
     if (!coords || !Array.isArray(coords) || coords.length !== 2) return;
 
-    // Fly to feature first
-    map.flyTo({
-      center: coords,
-      zoom: 8.5,
-      essential: true,
-      screenSpeed: 0.25,
-      curve: 1.2,
-      maxDuration: 5_000,
+    map.resize();
+
+    setPopupTitle(null);
+
+    map.once('idle', () => {
+      map.flyTo({
+        center: coords,
+        zoom: 8.5,
+        essential: true,
+        screenSpeed: 1,
+        curve: 1.2,
+      });
     });
 
-    // Add popup **after flyTo completes** (idle event)
-    const onIdle = () => {
-      popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false })
-        .setLngLat(coords)
-        .setHTML(`<strong>${geoData.features.find((f: any) => f.id === id)?.properties.PCON24NM}</strong>`)
-        .addTo(map);
-
-      map.off("idle", onIdle); // remove listener after firing
-    };
-
-    map.on("idle", onIdle);
+    map.once('moveend', () => {
+      const featureProperties = (geoData.features.find((f: any) => f.id === id)?.properties);
+      setPopupTitle(featureProperties.PCON24NM);
+    });
   });
+
 
   return (
     <div class={styles["map-container"]}>
       <div id="map" class={styles.map} />
+
+      <Show when={popupTitle()}>
+        <div class={styles.popup}>{popupTitle()}</div>
+      </Show>
 
       <article class={" " + styles.legend}>
         <ul class="list no-space">
