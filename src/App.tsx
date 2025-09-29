@@ -30,12 +30,12 @@ export default function App() {
           </Show>
 
           <Show when={!petitionMeta.government_response?.summary}>
-            <div style="margin-top:0;  gap: 0; width: 100%; display: flex; flex-direction:row; justify-content: space-evenly; align-items: center;">
-              <div style="width: 25%; height: 100%; padding: 1em; text-align: center; display: flex; flex-direction:column; gap: 0.8em; align-items: center; justify-content: space-around">
+            <div style="margin-top:0;  gap: 1em; width: 100%; display: flex; flex-direction:row; justify-content: space-evenly; align-items: center; padding: 0 1em">
+              <div style="width: 25%; height: 100%; display: flex; flex-direction:column; gap: 0.8em; align-items: center; justify-content: space-around">
                 <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
                 <ThresholdProgressBar type="DEBATE" />
               </div>
-              <div style="width: 20%; border-radius: 1em; height: 100%">
+              <div style="width: 25%; border-radius: 1em; height: 100%">
                 <div style=" display: flex; flex-direction: column; justify-content: center; height: 100%" class="max">
                   <SignatureMovingAverage mode="minute" />
                   <SignatureMovingAverage />
