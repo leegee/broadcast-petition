@@ -26,6 +26,7 @@ export const SignatureMovingAverage: Component<SignatureMovingAverageProps> = (p
                     const slice = counts.slice(Math.max(0, start), Math.max(0, end));
                     perHour.unshift(slice.reduce((a, b) => a + b, 0));
                 }
+                // return an hour's worth of the todal minutes for that 24-hours
                 return perHour.reduce((a, b) => a + b, 0) / 24;
 
             case "hour":
@@ -40,7 +41,7 @@ export const SignatureMovingAverage: Component<SignatureMovingAverageProps> = (p
     const label = props.mode === "minute"
         ? "Past minute"
         : props.mode === "day"
-            ? "1h/day"
+            ? "Average hour today"
             : "Past hour";
 
     return (
