@@ -8,7 +8,7 @@ import TopSignatures from "./components/TopSignatures";
 import Ticker from "./components/Ticker";
 import TopRegions from "./components/TopRegions";
 import ThresholdProgressBar from "./components/ThresholdProgressBar";
-import { petitionMeta } from "./petitionStore";
+import { petitionMeta } from "./stores/petition.store";
 import { SignatureMovingAverage } from "./components/SignatureMovingAverge";
 import { SpikeGraph } from "./components/SpikeGraph";
 

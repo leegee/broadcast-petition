@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
 import { makePersisted } from "@solid-primitives/storage";
-import { PETITION_ID } from "./petitionStore";
+import { PETITION_ID } from "./petition.store";
 
 const MAX_ENTRIES = 1000;
 

@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { getSignatureStore } from "./delta.store";
-import { BiggestChange, setBiggestChange } from "./components/LatestChange";
+import { BiggestChange, setBiggestChange } from "../components/LatestChange";
 
 export const PETITION_ID = 730194; // 727309; //730194;
 

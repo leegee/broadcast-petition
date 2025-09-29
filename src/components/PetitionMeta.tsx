@@ -1,5 +1,5 @@
 import styles from "./PetitionMeta.module.scss";
-import { petitionMeta, error } from "../petitionStore";
+import { petitionMeta, error } from "../stores/petition.store";
 import { Show } from "solid-js";
 
 export default function PetitionMeta() {

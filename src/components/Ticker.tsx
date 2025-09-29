@@ -1,7 +1,7 @@
 // from screen-capture home-broadcast
 import styles from "./Ticker.module.scss";
 import { createMemo, onMount, onCleanup } from "solid-js";
-import { countryCountsStore, countsStore } from "../petitionStore";
+import { countryCountsStore, countsStore } from "../stores/petition.store";
 
 interface TickerProps {
     speed?: number; // pixels per second

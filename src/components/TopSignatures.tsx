@@ -1,6 +1,6 @@
 import styles from "./TopSignatures.module.scss";
 import { createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
-import { countsStore, error, petitionMeta } from "../petitionStore";
+import { countsStore, error, petitionMeta } from "../stores/petition.store";
 import { setHighlightedFeatureId } from "./highlight.store";
 
 interface TopSignaturesProps {

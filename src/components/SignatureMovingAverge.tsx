@@ -1,5 +1,5 @@
 import { Component, createMemo } from "solid-js";
-import { getSignatureStore } from "../delta.store";
+import { getSignatureStore } from "../stores/delta.store";
 
 interface SignatureMovingAverageProps {
     mode?: "minute" | "hour" | "day"; // default: "hour"

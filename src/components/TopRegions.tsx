@@ -1,6 +1,6 @@
 import styles from "./TopRegions.module.scss";
 import { createMemo, For, Show } from "solid-js";
-import { error, petitionMeta, regionCountsStore } from "../petitionStore";
+import { error, petitionMeta, regionCountsStore } from "../stores/petition.store";
 interface TopRegionsProps {
     n?: number;
 }

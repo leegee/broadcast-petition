@@ -1,6 +1,6 @@
 import styles from "./ThresholdProgressBar.module.scss";
-import { Component, createMemo, Show } from "solid-js";
-import { petitionMeta, GOVERNMENT_RESPONSE_THRESHOLD, DEBATE_THRESHOLD, error } from "../petitionStore";
+import { createMemo, Show } from "solid-js";
+import { petitionMeta, GOVERNMENT_RESPONSE_THRESHOLD, DEBATE_THRESHOLD, error } from "../stores/petition.store";
 
 interface ThresholdProgressBarProps {
     type: "GOVERNMENT_RESPONSE" | "DEBATE";

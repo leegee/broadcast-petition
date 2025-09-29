@@ -1,6 +1,6 @@
 import styles from './SpikeGraph.module.scss';
 import { createMemo, For } from "solid-js";
-import { getSignatureStore } from "../delta.store";
+import { getSignatureStore } from "../stores/delta.store";
 
 const { totalSignatureCount } = getSignatureStore();
 

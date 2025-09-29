@@ -1,5 +1,5 @@
 import styles from "./PetitionLink.module.scss";
-import { PETITION_ID, petitionMeta } from "../petitionStore";
+import { PETITION_ID, petitionMeta } from "../stores/petition.store";
 import Flag from "./Flag";
 import { Show } from "solid-js";
 

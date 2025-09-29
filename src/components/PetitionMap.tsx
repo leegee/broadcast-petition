@@ -1,7 +1,7 @@
 import styles from "./PetitionMap.module.scss";
 import { onMount, onCleanup, createSignal, createEffect, Show } from "solid-js";
 import maplibregl from "maplibre-gl";
-import { fetchPetitionData, countsStore } from "../petitionStore";
+import { fetchPetitionData, countsStore } from "../stores/petition.store";
 import { highlightedFeatureId } from "./highlight.store";
 import { getFeatureCentroid } from "../lib/getFeatureCentroid";
 

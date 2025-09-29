@@ -1,7 +1,7 @@
 import styles from "./RotatingConstituencies.module.scss";
 import { For, createSignal, createMemo, onCleanup } from "solid-js";
 import { Transition } from "solid-transition-group";
-import { countsStore } from "../petitionStore";
+import { countsStore } from "../stores/petition.store";
 
 interface RotatingConstituenciesProps {
     n?: number;
