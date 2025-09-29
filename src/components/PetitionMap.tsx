@@ -26,6 +26,7 @@ export default function PetitionMap() {
 
   const [legendSteps, setLegendSteps] = createSignal<{ value: number; color: string }[]>([]);
   const [popupTitle, setPopupTitle] = createSignal<string | null>(null);
+  const [popupXY, setPopupXY] = createSignal<maplibregl.Point | null>(null);
 
   function getSignatureRange() {
     const values = Object.values(countsStore).map(c => c.count);
@@ -170,7 +171,6 @@ export default function PetitionMap() {
       return;
     }
 
-    // Highlight border
     map.setFilter("highlight-border", ["==", ["get", "id"], id]);
 
     const coords = getFeatureCentroid(map, "constituency-fills", id);
@@ -192,7 +192,9 @@ export default function PetitionMap() {
 
     map.once('moveend', () => {
       const featureProperties = (geoData.features.find((f: any) => f.id === id)?.properties);
-      setPopupTitle(featureProperties.PCON24NM);
+      const xy = map.project([featureProperties.LONG, featureProperties.LAT]);
+      setPopupXY(xy);
+      setPopupTitle(featureProperties.PCON24NM); // featureProperties.LAT featureProperties.LONG
     });
   });
 
@@ -201,8 +203,8 @@ export default function PetitionMap() {
     <div class={styles["map-container"]}>
       <div id="map" class={styles.map} />
 
-      <Show when={popupTitle()}>
-        <div class={styles.popup}>{popupTitle()}</div>
+      <Show when={popupTitle() && popupXY()}>
+        <div class={styles.popup} style={`top:${popupXY()!.y}px; left:${popupXY()!.x}px`}>{popupTitle()}</div>
       </Show>
 
       <article class={" " + styles.legend}>

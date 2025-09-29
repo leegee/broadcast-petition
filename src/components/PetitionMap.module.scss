@@ -44,9 +44,10 @@
 .popup {
     z-index: 10;
     position: absolute;
-    left: 35%;
-    top: 35%;
-    transform: translate(-50%, -50%);
+    // left: 35%;
+    // top: 35%;
+    // transform: translate(-50%, -50%);
+    transform: translate(10%, 10%);
     background-color: hsla(240, 90%, 50%, 50%);
     box-shadow: 0pt 2pt 4pt rgb(0, 0, 69);
     color: #fffd;
