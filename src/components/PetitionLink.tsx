@@ -15,6 +15,7 @@ export default function PetitionLink() {
                         <span class={styles.signat}> Sign at </span>
                         <a
                             class={styles.a}
+                            target="_blank"
                             href={`https://petition.parliament.uk/petitions/${PETITION_ID}/signatures/new`}
                         >
                             <span class={styles.domainname}>petition.parliament.uk/petitions/</span>

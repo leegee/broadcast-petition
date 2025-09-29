@@ -2,7 +2,9 @@ import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { getSignatureStore } from "./delta.store";
 import { BiggestChange, setBiggestChange } from "./components/LatestChange";
-export const PETITION_ID = 730194;
+
+export const PETITION_ID = 730194; // 727309; //730194;
+
 export const GOVERNMENT_RESPONSE_THRESHOLD = 10_000;
 export const DEBATE_THRESHOLD = 100_000;
 
@@ -20,6 +22,13 @@ export interface PetitionMeta {
     scheduled_debate_date: string | null;
     response_threshold_reached_at: string | null;
     government_response_at: string | null;
+    government_response: {
+        responded_on: string;
+        summary: string;
+        details: string;
+        created_at: string;
+        updated_at: string;
+    }
 }
 
 export const [petitionMeta, setPetitionMeta] = createStore<Partial<PetitionMeta>>({});
@@ -70,6 +79,7 @@ export async function fetchPetitionData() {
             scheduled_debate_date: meta.scheduled_debate_date,
             response_threshold_reached_at: meta.response_threshold_reached_at,
             government_response_at: meta.government_response_at,
+            government_response: { ...meta.government_response },
         });
 
         const newCountryCounts: Record<string, { name: string; count: number }> = {};

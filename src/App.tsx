@@ -22,23 +22,33 @@ export default function App() {
 
           <PetitionMeta />
 
-          <div style="margin-top:0;  gap: 0; width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: center;">
-            <div style="width: 25%; height: 100%; padding: 1em; text-align: center; display: flex; flex-direction:column; gap: 0.8em; align-items: center; justify-content: space-around">
-              <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
-              <ThresholdProgressBar type="DEBATE" />
-            </div>
-            <div style="width: 20%; border-radius: 1em; height: 100%">
-              <div style=" display: flex; flex-direction: column; justify-content: center; height: 100%" class="max">
-                <SignatureMovingAverage mode="minute" />
-                <SignatureMovingAverage />
-                <SignatureMovingAverage mode="day" />
+
+          <Show when={petitionMeta.government_response}>
+            <article>
+              <strong>{petitionMeta.government_response?.summary}</strong>
+              {/* <p>{petitionMeta.government_response?.details}</p> */}
+            </article>
+          </Show>
+
+          <Show when={!petitionMeta.government_response?.summary}>
+            <div style="margin-top:0;  gap: 0; width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: center;">
+              <div style="width: 25%; height: 100%; padding: 1em; text-align: center; display: flex; flex-direction:column; gap: 0.8em; align-items: center; justify-content: space-around">
+                <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
+                <ThresholdProgressBar type="DEBATE" />
               </div>
-              <SpikeGraph />
+              <div style="width: 20%; border-radius: 1em; height: 100%">
+                <div style=" display: flex; flex-direction: column; justify-content: center; height: 100%" class="max">
+                  <SignatureMovingAverage mode="minute" />
+                  <SignatureMovingAverage />
+                  <SignatureMovingAverage mode="day" />
+                </div>
+                <SpikeGraph />
+              </div>
+              <div style="width: 50%; text-align: center">
+                <LatestChange />
+              </div>
             </div>
-            <div style="width: 50%; text-align: center">
-              <LatestChange />
-            </div>
-          </div>
+          </Show>
 
           <div style="display: flex; width: 100%; background-color: rgb(9, 9, 194); ">
             <PetitionLink />
@@ -58,6 +68,6 @@ export default function App() {
         <PetitionMap />
 
       </main>
-    </Show>
+    </Show >
   );
 };
