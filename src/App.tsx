@@ -1,6 +1,6 @@
 import styles from "./App.module.scss";
 import { createMemo, Show } from "solid-js";
-import BiggestChange from "./components/LatestChange";
+import LatestChange from "./components/LatestChange";
 import PetitionMap from "./components/PetitionMap";
 import PetitionMeta from "./components/PetitionMeta";
 import PetitionLink from "./components/PetitionLink";
@@ -20,13 +20,13 @@ export default function App() {
 
           <PetitionMeta />
 
-          <div style="margin-top:0; margin: 1em; gap: 1em; width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: center;">
+          <div style="margin-top:0;  gap: 0; width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: center;">
             <div style="height: 100%; padding: 1em; width: 50%; text-align: center; display: flex; flex-direction:column; gap: 0.8em; align-items: center; justify-content: space-around">
               <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
               <ThresholdProgressBar type="DEBATE" />
             </div>
             <div style="width: 50%; text-align: center">
-              <BiggestChange />
+              <LatestChange />
             </div>
           </div>
 

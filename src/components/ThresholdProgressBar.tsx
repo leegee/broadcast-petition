@@ -1,5 +1,5 @@
-import { Component, createMemo, Show } from "solid-js";
 import styles from "./ThresholdProgressBar.module.scss";
+import { Component, createMemo, Show } from "solid-js";
 import { petitionMeta, GOVERNMENT_RESPONSE_THRESHOLD, DEBATE_THRESHOLD, error } from "../petitionStore";
 
 interface ThresholdProgressBarProps {
@@ -49,8 +49,8 @@ export default function ThresholdProgressBar(props: ThresholdProgressBarProps) {
 
     return (
         <Show when={!error() && petitionMeta.action}>
-            <button class={"chip primary large  " + styles.container + (props.type === 'DEBATE' ? ' tertiary ' : ' secondary ')}>
-                <progress class="max" value={signature_count()} max={threshold}></progress>
+            <button class={"chip small-padding  primary large  " + styles.container + (props.type === 'DEBATE' ? ' tertiary ' : ' secondary ')}>
+                <progress class="max tiny-padding" value={signature_count()} max={threshold}></progress>
                 <span>{label()}</span>
             </button>
         </Show>

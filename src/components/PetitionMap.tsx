@@ -15,8 +15,8 @@ const CLRS = [MIN_COLOR, MID_COLOR, MAX_COLOR];
 let baseZoomLevel = 5;
 
 const UK_BOUNDS: [number, number, number, number] = [
-  -8.649357, 49.863461,
-  1.768960, 60.860761
+  -8.649357, 49.863461, // SW
+  1.768960, 60.860761   // NE
 ];
 
 export default function PetitionMap() {
@@ -70,6 +70,7 @@ export default function PetitionMap() {
   }
 
   onMount(async () => {
+    // Load geoJSON
     geoData = await fetch(
       "Westminster_Parliamentary_Constituencies_July_2024_Boundaries_UK_BGC_-8097874740651686118.geojson"
     ).then(r => r.json());
@@ -85,6 +86,7 @@ export default function PetitionMap() {
 
     const { min, max } = getSignatureRange();
 
+    // Create map
     map = new maplibregl.Map({
       container: "map",
       style: { version: 8, sources: {}, layers: [], glyphs: "fonts/{fontstack}/{range}.pbf" },
@@ -94,6 +96,7 @@ export default function PetitionMap() {
     });
 
     map.on("load", () => {
+      // Add GeoJSON source
       map.addSource("constituencies", { type: "geojson", data: geoData });
 
       // Fill layer
@@ -119,10 +122,7 @@ export default function PetitionMap() {
         id: "highlight-border",
         type: "line",
         source: "constituencies",
-        paint: {
-          "line-color": "white",
-          "line-width": 5,
-        },
+        paint: { "line-color": "white", "line-width": 5 },
         filter: ["==", ["get", "id"], ""],
       });
 
@@ -145,48 +145,37 @@ export default function PetitionMap() {
     const id = highlightedFeatureId();
     if (!map || !map.isStyleLoaded() || !map.getLayer("highlight-border")) return;
 
-    // Clear popup if no highlighted feature
+    // Remove existing popup
+    if (popup) {
+      popup.remove();
+      popup = null;
+    }
+
     if (!id) {
       map.setFilter("highlight-border", ["==", ["get", "id"], ""]);
-      if (popup) {
-        popup.remove();
-        popup = null;
-      }
-
-      map.flyTo({
-        essential: true,
-        center: MAP_CENTRE,
-        zoom: baseZoomLevel,
-        screenSpeed: 0.15,
-        maxDuration: 10_000,
-      });
+      map.flyTo({ center: MAP_CENTRE, zoom: baseZoomLevel, essential: true });
       return;
     }
 
     // Highlight border
     map.setFilter("highlight-border", ["==", ["get", "id"], id]);
 
-    // Show popup at centroid
     const coords = getFeatureCentroid(map, "constituency-fills", id);
-    if (!coords) return;
+    if (!coords || !Array.isArray(coords) || coords.length !== 2) return;
 
-    if (!popup) popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
-    popup
+    // Create popup at feature centroid
+    popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false })
       .setLngLat(coords)
       .setHTML(`<strong>${geoData.features.find((f: any) => f.id === id)?.properties.PCON24NM}</strong>`)
       .addTo(map);
 
     // Fly to feature
-    map.once("idle", () => {
-      requestAnimationFrame(() => {
-        map.flyTo({
-          essential: true,
-          center: coords,
-          zoom: 8.5,
-          screenSpeed: 0.15,
-          maxDuration: 10_000,
-        });
-      });
+    map.flyTo({
+      center: coords,
+      zoom: 8.5,
+      essential: true,
+      screenSpeed: 0.15,
+      maxDuration: 10_000,
     });
   });
 
