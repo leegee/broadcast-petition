@@ -6,7 +6,8 @@
 
 .title {
     font-size: 32pt !important;
-    color: #fffd;
+    opacity: 0.9;
+    font-weight: bold;
 }
 
 .subtitle {
@@ -15,11 +16,8 @@
     margin: 0 !important;
     --_padding: 0;
 
-    color: #fffa;
-
     strong {
         font-weight: 900;
-        color: #fffc;
     }
 }
 

@@ -2,7 +2,7 @@ import styles from "./PetitionMap.module.scss";
 import { onMount, onCleanup, createSignal, createEffect } from "solid-js";
 import maplibregl from "maplibre-gl";
 import { fetchPetitionData, countsStore } from "../petitionStore";
-import { highlightedFeatureId, setHighlightedFeatureId } from "./highlight.store";
+import { highlightedFeatureId } from "./highlight.store";
 import { getFeatureCentroid } from "../lib/getFeatureCentroid";
 
 const POLL_INTERVAL_MS = 60_000;
@@ -15,15 +15,14 @@ const CLRS = [MIN_COLOR, MID_COLOR, MAX_COLOR];
 let baseZoomLevel = 5;
 
 const UK_BOUNDS: [number, number, number, number] = [
-  -8.649357, 49.863461, // SW corner
-  1.768960, 60.860761  // NE corner
+  -8.649357, 49.863461,
+  1.768960, 60.860761
 ];
 
 export default function PetitionMap() {
   let map: maplibregl.Map;
-  let popup: maplibregl.Popup;
+  let popup: maplibregl.Popup | null = null;
   let intervalId: number;
-  let highlightTimeout: number;
   let geoData: any;
 
   const [legendSteps, setLegendSteps] = createSignal<{ value: number; color: string }[]>([]);
@@ -88,7 +87,7 @@ export default function PetitionMap() {
 
     map = new maplibregl.Map({
       container: "map",
-      style: { version: 8, sources: {}, layers: [] },
+      style: { version: 8, sources: {}, layers: [], glyphs: "fonts/{fontstack}/{range}.pbf" },
       center: MAP_CENTRE,
       zoom: baseZoomLevel,
       attributionControl: false,
@@ -115,7 +114,7 @@ export default function PetitionMap() {
         },
       });
 
-      // Highlight border overlay
+      // Highlight border
       map.addLayer({
         id: "highlight-border",
         type: "line",
@@ -129,11 +128,7 @@ export default function PetitionMap() {
 
       updateLegend(min, max);
 
-      map.fitBounds(UK_BOUNDS, {
-        padding: 40,
-        animate: false,
-      });
-
+      map.fitBounds(UK_BOUNDS, { padding: 40, animate: false });
       baseZoomLevel = map.getZoom();
       map.setMinZoom(baseZoomLevel);
     });
@@ -148,32 +143,40 @@ export default function PetitionMap() {
 
   createEffect(() => {
     const id = highlightedFeatureId();
-    if (!map) return;
-    if (!map.isStyleLoaded()) return;
-    if (!map.getLayer("highlight-border")) return;
+    if (!map || !map.isStyleLoaded() || !map.getLayer("highlight-border")) return;
 
-    // Update highlight border
-    map.setFilter("highlight-border", ["==", ["get", "id"], id || ""]);
+    // Clear popup if no highlighted feature
+    if (!id) {
+      map.setFilter("highlight-border", ["==", ["get", "id"], ""]);
+      if (popup) {
+        popup.remove();
+        popup = null;
+      }
 
-    if (id === null) {
-      // map.setZoom(baseZoomLevel);
-      // map.setCenter(MAP_CENTRE);
       map.flyTo({
         essential: true,
         center: MAP_CENTRE,
         zoom: baseZoomLevel,
         screenSpeed: 0.15,
         maxDuration: 10_000,
-        // curve: 1.2,
       });
+      return;
     }
 
-    if (!id) return;
+    // Highlight border
+    map.setFilter("highlight-border", ["==", ["get", "id"], id]);
 
+    // Show popup at centroid
     const coords = getFeatureCentroid(map, "constituency-fills", id);
     if (!coords) return;
 
-    // Use requestAnimationFrame to ensure smooth animation
+    if (!popup) popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
+    popup
+      .setLngLat(coords)
+      .setHTML(`<strong>${geoData.features.find((f: any) => f.id === id)?.properties.PCON24NM}</strong>`)
+      .addTo(map);
+
+    // Fly to feature
     map.once("idle", () => {
       requestAnimationFrame(() => {
         map.flyTo({
@@ -182,7 +185,6 @@ export default function PetitionMap() {
           zoom: 8.5,
           screenSpeed: 0.15,
           maxDuration: 10_000,
-          // curve: 1.2,
         });
       });
     });
@@ -190,14 +192,14 @@ export default function PetitionMap() {
 
   return (
     <div class={styles["map-container"]}>
-
       <div id="map" class={styles.map} />
 
       <article class={" " + styles.legend}>
         <ul class="list no-space">
           {legendSteps().map((step) => (
             <li>
-              <button class={'chip border ' + styles["legend-color"]}
+              <button
+                class={'chip border ' + styles["legend-color"]}
                 style={{ "background-color": step.color }}
               />
               <div class="max"></div>
@@ -206,6 +208,6 @@ export default function PetitionMap() {
           ))}
         </ul>
       </article>
-    </div >
+    </div>
   );
 }

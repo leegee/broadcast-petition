@@ -18,6 +18,10 @@ article.highlighted {
 }
 
 
-.stroked-black {
+body.dark .stroked-black {
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+body.light .stroked-black {
+    text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
 }
