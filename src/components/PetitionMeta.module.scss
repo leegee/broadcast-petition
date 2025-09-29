@@ -6,7 +6,7 @@
 
 .title {
     font-size: 32pt !important;
-    opacity: 0.9;
+    opacity: 0.99;
     font-weight: bold;
 }
 
@@ -15,9 +15,16 @@
     font-weight: 100;
     margin: 0 !important;
     --_padding: 0;
+    opacity: 0.9;
+    display: flex;
 
     strong {
         font-weight: 900;
+    }
+
+    .total_signatures_text {
+        opacity: 0.5;
+        margin-left: 0.3em;
     }
 }
 

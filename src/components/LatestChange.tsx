@@ -25,10 +25,10 @@ export default function BiggestChange() {
 
                 return (
                     <article class={`
-                        ${styles.container} fill center-align middle-align padding medium-elevate
+                        ${styles.container} small-caps fill center-align middle-align padding medium-elevate
                         ${highlightedFeatureId() === changeAccessor().id ? 'highlighted ' + styles.highlighted : ''}
                     ` } >
-                        <h6>Latest</h6>
+                        <h6 class="small-caps">Latest</h6>
                         <p>
                             <span class={styles.name}>
                                 {changeAccessor().name + ' '}

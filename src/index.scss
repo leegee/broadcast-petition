@@ -34,3 +34,9 @@ body.light .stroked-black {
     position: relative !important;
     overflow: visible !important;
 }
+
+.small-caps {
+    text-transform: lowercase !important;
+    font-variant: small-caps !important;
+    margin-right: 0.3em;
+}

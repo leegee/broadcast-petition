@@ -14,7 +14,8 @@ export default function PetitionMeta() {
                     <h1 class={'tiny-padding center-align stroked-black ' + styles.title}>{petitionMeta.action}</h1>
                     {/* <hr /> */}
                     <h2 class={'no-padding center-align stroked-black ' + styles.subtitle} style="z-index: 20; position: relative;">
-                        <strong>{petitionMeta.signature_count?.toLocaleString()}</strong> total signatures
+                        <strong>{petitionMeta.signature_count?.toLocaleString()}</strong>
+                        <span class={'small-caps ' + styles.total_signatures_text}>total signatures</span>
                     </h2>
                 </article>
 
