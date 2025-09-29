@@ -23,7 +23,7 @@ export default function App() {
           <PetitionMeta />
 
 
-          <Show when={petitionMeta.government_response}>
+          <Show when={petitionMeta.government_response?.summary}>
             <article>
               <strong>{petitionMeta.government_response?.summary}</strong>
               {/* <p>{petitionMeta.government_response?.details}</p> */}
