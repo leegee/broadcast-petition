@@ -29,6 +29,7 @@ export default function App() {
             </div>
             <div style="width: 20%; border-radius: 1em; height: 100%">
               <div style=" display: flex; flex-direction: column; justify-content: center; height: 100%" class="max">
+                <SignatureMovingAverage mode="minute" />
                 <SignatureMovingAverage />
                 <SignatureMovingAverage mode="day" />
               </div>

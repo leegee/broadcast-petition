@@ -143,7 +143,7 @@ export default function PetitionMap() {
 
   createEffect(() => {
     const id = highlightedFeatureId();
-    if (!map || !map.isStyleLoaded()) return;
+    if (!map || !map.isStyleLoaded() || !map.getLayer("highlight-border")) return;
 
     // Remove existing popup
     if (popup) {
