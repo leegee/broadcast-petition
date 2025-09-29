@@ -9,6 +9,8 @@ import Ticker from "./components/Ticker";
 import TopRegions from "./components/TopRegions";
 import ThresholdProgressBar from "./components/ThresholdProgressBar";
 import { petitionMeta } from "./petitionStore";
+import { SignatureMovingAverage } from "./components/SignatureMovingAverge";
+import { SpikeGraph } from "./components/SpikeGraph";
 
 export default function App() {
   const ready = createMemo(() => petitionMeta.action);
@@ -21,9 +23,16 @@ export default function App() {
           <PetitionMeta />
 
           <div style="margin-top:0;  gap: 0; width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: center;">
-            <div style="height: 100%; padding: 1em; width: 50%; text-align: center; display: flex; flex-direction:column; gap: 0.8em; align-items: center; justify-content: space-around">
+            <div style="width: 25%; height: 100%; padding: 1em; text-align: center; display: flex; flex-direction:column; gap: 0.8em; align-items: center; justify-content: space-around">
               <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
               <ThresholdProgressBar type="DEBATE" />
+            </div>
+            <div style="width: 20%; border-radius: 1em; height: 100%">
+              <div style=" display: flex; flex-direction: column; justify-content: center; height: 100%" class="max">
+                <SignatureMovingAverage />
+                <SignatureMovingAverage mode="day" />
+              </div>
+              <SpikeGraph />
             </div>
             <div style="width: 50%; text-align: center">
               <LatestChange />

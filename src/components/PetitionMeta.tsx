@@ -1,7 +1,6 @@
 import styles from "./PetitionMeta.module.scss";
 import { petitionMeta, error } from "../petitionStore";
 import { Show } from "solid-js";
-import { SpikeGraph } from "./SpikeGraph";
 
 export default function PetitionMeta() {
     return (
@@ -17,9 +16,6 @@ export default function PetitionMeta() {
                     <h2 class={'small padding center-align stroked-black ' + styles.subtitle} style="z-index: 20; position: relative;">
                         <strong>{petitionMeta.signature_count?.toLocaleString()}</strong> total signatures
                     </h2>
-
-                    <SpikeGraph />
-
                 </article>
 
                 <article class="border margin">
