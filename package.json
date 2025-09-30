@@ -10,7 +10,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "test": "vitest",
-    "broadcast": "concurrently \"bun dev\" \"node scripts/rtp-server.js\" \"node scripts/client.js\""
+    "broadcast": "concurrently -k -n RTP,CLIENT -c blue,green \"node scripts/rtp-server.js\" \"npx wait-on tcp:3001 && node scripts/client.js\""
   },
   "license": "MIT",
   "devDependencies": {
@@ -24,7 +24,8 @@
     "typescript": "^5.7.2",
     "vite": "^7.1.4",
     "vite-plugin-solid": "2.11.8",
-    "vitest": "^3.0.0"
+    "vitest": "^3.0.0",
+    "wait-on": "^9.0.1"
   },
   "dependencies": {
     "beercss": "^3.12.8",
