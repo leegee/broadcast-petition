@@ -6,7 +6,7 @@ const STREAM_WIDTH = 1920;
 const STREAM_HEIGHT = 1080;
 
 (async () => {
-    console.log("🚀 Launching Chromium...");
+    console.log("Launching Chromium...");
 
     const browser = await chromium.launch({
         headless: false,
@@ -36,7 +36,7 @@ const STREAM_HEIGHT = 1080;
                 try {
                     // Capture the page (not the whole screen)
                     const pageStream = await navigator.mediaDevices.getDisplayMedia({
-                        video: { cursor: "never" },
+                        video: { width: STREAM_WIDTH, height: STREAM_HEIGHT, cursor: "never" },
                         audio: false,
                     });
 
@@ -50,24 +50,16 @@ const STREAM_HEIGHT = 1080;
                     const ctx = canvas.getContext("2d");
 
                     function drawFrame() {
-                        // Crop out top bar / bookmarks (adjust y and height as needed)
-                        ctx.drawImage(
-                            video,
-                            0,
-                            cropTop,
-                            STREAM_WIDTH,
-                            STREAM_HEIGHT,
-                            0,
-                            0,
-                            STREAM_WIDTH,
-                            STREAM_HEIGHT
-                        );
+                        const scaleHeight = video.videoHeight - cropTop;
+                        ctx.drawImage(video, 0, cropTop, video.videoWidth, scaleHeight, 0, 0, STREAM_WIDTH, STREAM_HEIGHT);
                         requestAnimationFrame(drawFrame);
                     }
                     drawFrame();
 
                     const recorder = new MediaRecorder(canvas.captureStream(60), {
-                        mimeType: "video/webm; codecs=vp8,opus",
+                        mimeType: "video/webm; codecs=vp9,opus",
+                        videoBitsPerSecond: 5_000_000, // 5 Mbps
+                        audioBitsPerSecond: 128_000,   // 128 kbps
                     });
 
                     recorder.ondataavailable = (event) => {
@@ -77,7 +69,7 @@ const STREAM_HEIGHT = 1080;
                     };
 
                     // 250ms chunks → keyframes ~4s
-                    recorder.start(250);
+                    recorder.start(1000);
                     console.log("[browser] Recording started (canvas)");
                 } catch (err) {
                     console.error("[browser] Screen capture failed:", err);

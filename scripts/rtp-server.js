@@ -53,9 +53,9 @@ function startFfmpeg() {
         "-preset", "veryfast",
         "-tune", "zerolatency",
         "-pix_fmt", "yuv420p",
-        "-g", "240",          // keyframe every 4s
-        "-keyint_min", "60",  // min 1s
-        "-sc_threshold", "0", // disable scene detection
+        "-g", "120",          // keyframe every 2s
+        "-keyint_min", "120",
+        "-sc_threshold", "0",
 
         "-c:a", "aac",
         "-ar", "44100",
