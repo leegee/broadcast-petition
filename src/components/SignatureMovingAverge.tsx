@@ -31,9 +31,9 @@ export default function SignatureMovingAverage(props: SignatureMovingAverageProp
 
             case "hour":
             default:
-                // average over last 60 minutes
+                // Sum over last 60 minutes
                 const last60 = counts.slice(-60);
-                return last60.reduce((a, b) => a + b, 0) / last60.length;
+                return last60.reduce((a, b) => a + b, 0);
         }
     });
 
