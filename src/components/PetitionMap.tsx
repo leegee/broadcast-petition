@@ -150,11 +150,6 @@ export default function PetitionMap() {
       map.fitBounds(UK_BOUNDS, { padding: 40, animate: false });
       baseZoomLevel = Math.floor(map.getZoom());
       map.setMinZoom(baseZoomLevel);
-
-      //   new maplibregl.Popup({ closeOnClick: false, anchor: "bottom" })
-      //     .setLngLat([-1, 54])
-      //     .setHTML('<button class="chip primary">Hello World!</button>')
-      //     .addTo(map);
     });
 
     intervalId = window.setInterval(updateMapData, POLL_INTERVAL_MS);
@@ -202,7 +197,7 @@ export default function PetitionMap() {
       const featureProperties = (geoData.features.find((f: any) => f.id === id)?.properties);
       const xy = map.project([featureProperties.LONG, featureProperties.LAT]);
       setPopupXY(xy);
-      setPopupTitle(featureProperties.PCON24NM); // featureProperties.LAT featureProperties.LONG
+      setPopupTitle(featureProperties.PCON24NM);
     });
   });
 

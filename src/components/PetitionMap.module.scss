@@ -61,6 +61,7 @@
     // transform: translate(-50%, -50%);
     transform: translate(-50%, 70%);
     background-color: hsla(240, 90%, 50%, 50%);
+    background-color: var(--highlight-clr);
     box-shadow: 0pt 2pt 4pt rgb(0, 0, 69);
     color: #fffd;
     border: 2pt solid oldlace;

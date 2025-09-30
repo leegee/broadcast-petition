@@ -41,15 +41,12 @@ export default function TopSignatures(props: TopSignaturesProps) {
                     const feature = list[highlightIndex()];
                     setHighlightedFeatureId(feature?.code ?? null);
 
-                    // alert(`Highlighting: ${feature?.name} (${highlightIndex()})`);
-
                     timeoutId = window.setTimeout(() => {
                         setHighlightIndex((i) => i + 1);
                         advanceHighlight();
                     }, HIGHLIGHT_INTERVAL_MS);
                 } else {
                     setHighlightedFeatureId(null);
-                    // alert("Pausing before restarting highlight tour");
 
                     timeoutId = window.setTimeout(() => {
                         setHighlightIndex(0);
