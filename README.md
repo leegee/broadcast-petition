@@ -1,5 +1,8 @@
 # Broadcast Petition
 
+Creates real-time visualistations based on data from the Petition Parliament UK website,
+with a map, selected facts, and a tour of the constituencies that voted the most.
+
 ## Synopsis
 
 ```bash
