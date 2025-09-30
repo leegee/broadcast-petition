@@ -9,5 +9,5 @@
 ```
 ## Screeshots
 
-    ![Screenshot](./README/screenshot1.png)
-    ![Screenshot](./README/screenshot2.png)
+![Screenshot](./README/screenshot1.png)
+![Screenshot](./README/screenshot2.png)
