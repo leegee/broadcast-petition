@@ -1,45 +1,74 @@
 import styles from './SpikeGraph.module.scss';
-import { createMemo, For } from "solid-js";
+import { createMemo, createSignal, onCleanup, onMount } from "solid-js";
 import { getSignatureStore } from "../stores/delta.store";
 
 const { totalSignatureCount } = getSignatureStore();
 
-export const MAX_ENTRIES = 1000;
 const DEFAULT_SPIKE_HEIGHT = 60;
 const DEFAULT_SPIKE_WIDTH = 6;
 
-export const SpikeGraph = (props: {
+export default function SpikeGraph(props: {
     color?: string;
-    width?: number;
+    width?: number | string;
     height?: number;
-    gap?: number;
-}) => {
-    const height = props.height ?? DEFAULT_SPIKE_HEIGHT;
+}) {
     const color = props.color ?? "var(--spike-colour)";
-    // const width = ; // props.width ?? DEFAULT_SPIKE_WIDTH;
+    const height = props.height ?? DEFAULT_SPIKE_HEIGHT;
+    const [measuredWidth, setMeasuredWidth] = createSignal<number>(500);
 
+    let svgRef: SVGSVGElement | undefined;
+
+    onMount(() => {
+        if (svgRef) {
+            const ro = new ResizeObserver(entries => {
+                for (const entry of entries) {
+                    setMeasuredWidth(entry.contentRect.width);
+                }
+            });
+            ro.observe(svgRef);
+            onCleanup(() => ro.disconnect());
+        }
+    });
+
+    const numericWidth = createMemo(() =>
+        typeof props.width === "number" ? props.width : measuredWidth()
+    );
+
+    // Compute spike heights normalized to the max value
     const spikes = createMemo(() => {
         const values = totalSignatureCount().slice(0, 200) || [];
         if (!values.length) return [];
         const maxValue = Math.max(...values, 1);
-        return values.map((v) => (v / maxValue) * height);
+        return values.map(v => (v / maxValue) * height);
     });
 
-    return (
-        <article class={styles["graph-container"]}
-            style={{ height: `${height}px`, }}
-        >
-            <For each={spikes()}>
-                {(spikeHeight) => (
-                    <div class={styles.spike}
-                        style={{
-                            width: `${Math.min(Math.max(100 / spikes().length, 1), 100)}%`,
-                            height: `${spikeHeight}px`,
-                            background: `linear-gradient(${color} 10%, transparent 40%)`,
-                        }}
-                    />
-                )}
-            </For>
-        </article>
+    const spikeWidth = createMemo(
+        () => (spikes().length ? numericWidth() / spikes().length : DEFAULT_SPIKE_WIDTH)
     );
-};
+
+    const points = createMemo(() =>
+        spikes()
+            .map((spike, i) => {
+                const x = i * spikeWidth();
+                const y = height - spike;
+                return `${x},${y}`;
+            })
+            .join(" ")
+    );
+
+    return (
+        <svg
+            ref={svgRef}
+            width={props.width ?? "100%"}
+            height={height}
+            class={styles["graph-container"]}
+        >
+            <polyline
+                points={points()}
+                fill="none"
+                stroke={color}
+                stroke-width="2"
+            />
+        </svg>
+    );
+}

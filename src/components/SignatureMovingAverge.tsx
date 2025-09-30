@@ -5,7 +5,7 @@ interface SignatureMovingAverageProps {
     mode?: "minute" | "hour" | "day"; // default: "hour"
 }
 
-export const SignatureMovingAverage: Component<SignatureMovingAverageProps> = (props) => {
+export default function SignatureMovingAverage(props: SignatureMovingAverageProps) {
     const { totalSignatureCount } = getSignatureStore();
 
     const value = createMemo(() => {
@@ -37,17 +37,17 @@ export const SignatureMovingAverage: Component<SignatureMovingAverageProps> = (p
         }
     });
 
-    // Label text
     const label = props.mode === "minute"
-        ? "Past minute"
+        ? " signatures in the past minute"
         : props.mode === "day"
-            ? "Average hour today"
-            : "Past hour";
+            ? " signatures on average per hour today"
+            : " signatures in the past hour";
 
     return (
         <button class="chip large border fill tiny-margin medium-elevate">
             <span>
-                {label}: {Math.floor(value()).toLocaleString()}
+                {Math.floor(value()).toLocaleString()}
+                {label}
             </span>
         </button>
     );

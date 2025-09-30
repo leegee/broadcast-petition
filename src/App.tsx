@@ -1,5 +1,6 @@
 import styles from "./App.module.scss";
 import { createMemo, Show } from "solid-js";
+import { petitionMeta } from "./stores/petition.store";
 import LatestChange from "./components/LatestChange";
 import PetitionMap from "./components/PetitionMap";
 import PetitionMeta from "./components/PetitionMeta";
@@ -8,12 +9,15 @@ import TopSignatures from "./components/TopSignatures";
 import Ticker from "./components/Ticker";
 import TopRegions from "./components/TopRegions";
 import ThresholdProgressBar from "./components/ThresholdProgressBar";
-import { petitionMeta } from "./stores/petition.store";
-import { SignatureMovingAverage } from "./components/SignatureMovingAverge";
-import { SpikeGraph } from "./components/SpikeGraph";
+import SignatureMovingAverage from "./components/SignatureMovingAverge";
+import Carousel from "./components/Carousel";
+import SpikeGraph from "./components/SpikeGraph";
 
 export default function App() {
   const ready = createMemo(() => petitionMeta.action);
+
+  const govResponse = createMemo(() => petitionMeta.government_response);
+  const hasGovResponse = createMemo(() => !!govResponse()?.created_at);
 
   return (
     <Show when={ready}>
@@ -22,45 +26,47 @@ export default function App() {
 
           <PetitionMeta />
 
-          <Show when={petitionMeta.government_response?.summary}>
-            <article>
-              <strong>{petitionMeta.government_response?.summary}</strong>
-              {/* <p>{petitionMeta.government_response?.details}</p> */}
-            </article>
-          </Show>
-
-          <Show when={!petitionMeta.government_response?.summary}>
-            <div style="margin-top:0;  gap: 1em; width: 100%; display: flex; flex-direction:row; justify-content: space-evenly; align-items: center; padding: 0 1em">
-              <div style="width: 25%; height: 100%; display: flex; flex-direction:column; gap: 0.8em; align-items: center; justify-content: space-around">
-                <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
-                <ThresholdProgressBar type="DEBATE" />
-              </div>
-              <div style="width: 25%; border-radius: 1em; height: 100%">
-                <div style=" display: flex; flex-direction: column; justify-content: center; height: 100%" class="max">
-                  <SignatureMovingAverage mode="minute" />
-                  <SignatureMovingAverage />
-                  <SignatureMovingAverage mode="day" />
-                </div>
-                {/* <SpikeGraph /> */}
-              </div>
-              <div style="width: 50%;  display: flex; ">
+          <div class="row">
+            <div class="s-12 max">
+              <Carousel intervalMs={5_000}>
+                <article class="max padding">
+                  <p class="no-padding no-margin" style="position: absolute; top:0; left:2em; opacity:0.75">Minute-by-minute</p>
+                  <SpikeGraph />
+                </article>
+                <article class="max">
+                  <Show when={hasGovResponse()}>
+                    <strong>{govResponse()?.summary}</strong>
+                    <strong>{govResponse()?.details}</strong>
+                  </Show>
+                  <Show when={!hasGovResponse()}>
+                    <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
+                    <ThresholdProgressBar type="DEBATE" />
+                  </Show>
+                </article>
+                <article class="max padding">
+                  <p class="no-padding no-margin" style="position: absolute; top:0; left:2em; opacity:0.75">Minute-by-minute</p>
+                  <SpikeGraph />
+                </article>
                 <LatestChange />
-              </div>
+                <SignatureMovingAverage mode="minute" />
+                <SignatureMovingAverage />
+                <SignatureMovingAverage mode="day" />
+              </Carousel>
             </div>
-          </Show>
-
-          <div style="display: flex; width: 100%; background-color: rgb(9, 9, 194); ">
-            <PetitionLink />
-            <Ticker />
           </div>
 
-          <div style="width: 100%; display: flex; flex-direction:row; justify-content: space-between; align-items: flex-start;">
-            <div style="width: 50%; display: flex;    justify-content: center; flex-direction: column; align-items: center;">
+          <div class="row top-align tiny-padding">
+            <div class="s-6 max">
               <TopRegions />
             </div>
-            <div style="width: 50%; display: flex;    justify-content: center; flex-direction: column; align-items: center;">
+            <div class="s-6 max">
               <TopSignatures />
             </div>
+          </div>
+
+          <div style="display: flex; width: 100%; margin-top: 1em; background-color: rgb(9, 9, 194); ">
+            <PetitionLink />
+            <Ticker />
           </div>
         </div >
 

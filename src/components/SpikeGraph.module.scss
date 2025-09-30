@@ -1,22 +1,15 @@
 .graph-container {
-    z-index: 1;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: auto;
-    // opacity: 0.5;
-    display: flex;
-    align-items: flex-end;
-    background: transparent;
+    height: 100%;
+    width: 100%;
     margin: 0;
     padding: 0;
 }
 
-.spike {
-    z-index: 0;
-    border: 0.5px solid var(--spike-colour) !important;
-    border: none !important;
-    border-radius: 10% !important;
-    background: linear-gradient(white 0%, var(--spike-colour) 30%, #00F5 100%);
+/* Target SVG rects inside the container */
+.graph-container rect {
+    stroke: var(--spike-colour);
+    stroke-width: 0.5;
+    rx: 2;
+    shape-rendering: crispEdges;
+    transition: height 0.3s ease, y 0.3s ease, fill 0.3s ease;
 }

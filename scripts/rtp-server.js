@@ -46,6 +46,10 @@ function startFfmpeg() {
         "-map", "1:a",
 
         "-c:v", "libx264",
+        "-b:v", "6800k",
+        "-maxrate", "6800k",
+        "-bufsize", "13600k",
+
         "-preset", "veryfast",
         "-tune", "zerolatency",
         "-pix_fmt", "yuv420p",

@@ -11,9 +11,10 @@ export interface BiggestChange {
     new: number;
     timestamp: Date;
 }
+
 export const [biggestChange, setBiggestChange] = createSignal<BiggestChange | null>(null);
 
-export default function BiggestChange() {
+export default function LatestChange() {
     const change = createMemo<BiggestChange | null>(() => biggestChange());
 
     return (
