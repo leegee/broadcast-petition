@@ -2,7 +2,7 @@ import { Component, createMemo } from "solid-js";
 import { getSignatureStore } from "../stores/delta.store";
 
 interface SignatureMovingAverageProps {
-    mode?: "minute" | "hour" | "day"; // default: "hour"
+    mode?: "minute" | "hour" | "day";
 }
 
 export default function SignatureMovingAverage(props: SignatureMovingAverageProps) {
@@ -44,11 +44,11 @@ export default function SignatureMovingAverage(props: SignatureMovingAverageProp
             : " signatures in the past hour";
 
     return (
-        <button class="chip large border fill tiny-margin medium-elevate">
-            <span>
+        <div class="border fill tiny-margin medium-elevate">
+            <h3 class="padding center-align">
                 {Math.floor(value()).toLocaleString()}
                 {label}
-            </span>
-        </button>
+            </h3>
+        </div>
     );
 };
