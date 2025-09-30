@@ -26,6 +26,15 @@ export default function App() {
 
           <PetitionMeta />
 
+          <div class="row top-align tiny-padding">
+            <div class="s-6 max">
+              <TopRegions />
+            </div>
+            <div class="s-6 max">
+              <TopSignatures />
+            </div>
+          </div>
+
           <div class="row">
             <div class="s-12 max">
               <Carousel intervalMs={5_000}>
@@ -52,15 +61,6 @@ export default function App() {
                 <SignatureMovingAverage />
                 <SignatureMovingAverage mode="day" />
               </Carousel>
-            </div>
-          </div>
-
-          <div class="row top-align tiny-padding">
-            <div class="s-6 max">
-              <TopRegions />
-            </div>
-            <div class="s-6 max">
-              <TopSignatures />
             </div>
           </div>
 
