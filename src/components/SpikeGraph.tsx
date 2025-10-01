@@ -1,5 +1,5 @@
 import styles from './SpikeGraph.module.scss';
-import { createMemo, createSignal, onCleanup, onMount } from "solid-js";
+import { createMemo, createSignal, onCleanup, onMount, Show } from "solid-js";
 import { getSignatureStore } from "../stores/delta.store";
 
 const { totalSignatureCount } = getSignatureStore();
@@ -57,18 +57,25 @@ export default function SpikeGraph(props: {
     );
 
     return (
-        <svg
-            ref={svgRef}
-            width={props.width ?? "100%"}
-            height={height}
-            class={styles["graph-container"]}
-        >
-            <polyline
-                points={points()}
-                fill="none"
-                stroke={color}
-                stroke-width="2"
-            />
-        </svg>
+        <>
+            <Show when={points() === ''}>
+                {' '}
+            </Show>
+            <Show when={points() !== ''}>
+                <svg
+                    ref={svgRef}
+                    width={props.width ?? "100%"}
+                    height={height}
+                    class={styles["graph-container"]}
+                >
+                    <polyline
+                        points={points()}
+                        fill="none"
+                        stroke={color}
+                        stroke-width="2"
+                    />
+                </svg>
+            </Show>
+        </>
     );
 }

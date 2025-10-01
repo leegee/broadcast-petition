@@ -43,6 +43,8 @@ export default function SignatureMovingAverage(props: SignatureMovingAverageProp
             ? " signatures on average per hour today"
             : " signatures in the past hour";
 
+    if (value() === 0) return '';
+
     return (
         <div class="border fill tiny-margin medium-elevate">
             <h3 class="padding center-align">
