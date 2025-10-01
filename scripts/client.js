@@ -10,7 +10,7 @@ const STREAM_HEIGHT = 1080;
 
     const browser = await chromium.launch({
         headless: false,
-        args: ["--start-maximized", "--disable-infobars", `--app=${VITE_ADDRESS}`],
+        args: ["--start-maximized", "--disable-infobars"], // , `--app = ${ VITE_ADDRESS }`
     });
 
     const context = await browser.newContext({
