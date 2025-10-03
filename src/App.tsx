@@ -7,13 +7,15 @@ import PetitionTitle from "./components/PetitionTitle";
 import Carousel from "./components/Carousel";
 import DetailsCarousel from "./DetailsCarousel";
 import PetitionLink from "./components/PetitionLink";
-import ThresholdProgressBar from "./components/ThresholdProgressBar";
 
 export default function App() {
   const ready = createMemo(() => petitionMeta.action);
-
   const govResponse = createMemo(() => petitionMeta.government_response);
   const hasGovResponse = createMemo(() => !!govResponse()?.created_at);
+  const responseDate = createMemo(() => {
+    const dateStr = petitionMeta.government_response_at;
+    return dateStr ? new Date(dateStr) : null;
+  });
 
   return (
     <Show when={ready}>
@@ -24,13 +26,15 @@ export default function App() {
 
           <Show when={hasGovResponse()}>
             <Carousel intervalMs={10_000}>
-              <article class="card">
-                <h5 class="small-padding">Government Response</h5>
-                <ThresholdProgressBar type="GOVERNMENT_RESPONSE" />
-                <p class="small-padding">
+              <article class="card padding">
+                <h5 class="center-align">Government Response</h5>
+                <p class="center-align">
+                  Debate on {responseDate()?.toLocaleDateString()} at {responseDate()?.toLocaleTimeString()}
+                </p>
+                <p class="center-align">
                   <strong>{govResponse()?.summary}</strong>
                 </p>
-                <p class="small-padding">
+                <p>
                   {govResponse()?.details}
                 </p>
               </article>
@@ -43,16 +47,15 @@ export default function App() {
             <DetailsCarousel />
           </Show>
 
-
-          <div style="display: flex; width: 100%; margin-top: 1em; background-color: rgb(9, 9, 194); ">
+          <footer class="screen-bottom">
             <PetitionLink />
             <Ticker />
-          </div>
-        </div >
+          </footer>
+        </div>
 
         <PetitionMap />
 
-      </main >
-    </Show >
+      </main>
+    </Show>
   );
 };
